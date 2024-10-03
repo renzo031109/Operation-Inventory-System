@@ -1,0 +1,119 @@
+{% extends 'base.html'  %}
+
+{% block title %}
+HOME
+{% endblock title %}
+
+
+{% block content %}
+
+<div class="dasboard-title mt-5 pb-3">
+    <h3>STORAGE DASHBOARD  </h3>
+</div>
+<div class="container text-center">
+    <div class="row">
+      <div class="col-4">
+        <div class="card text-bg-primary mb-3 shadow fade show">
+            <h5 class="card-header">TOTAL ITEM COUNT</h5>
+            <div class="card-body">
+              <h1 class="card-title">{{ item_count }}</h1>
+            </div>
+          </div>
+      </div>
+      <div class="col-4">
+        <div class="card text-bg-danger shadow fade show">
+            <h5 class="card-header ">TOTAL ITEM WITH CRITICAL STOCKS</h5>
+            <div class="card-body">
+                <h1 class="card-title">{{ critical_count }}</h1>
+            </div>
+          </div>
+      </div>
+      <div class="col-4">
+        <div class="card text-bg-warning mb-3 shadow fade show ">
+            <h5 class="card-header">TRANSACTION TODAY</h5>
+            <div class="card-body">
+                <h1 class="card-title">{{ transaction_count }}</h1>
+            </div>
+          </div>
+      </div>
+      
+    </div>
+</div>
+
+<div class="dasboard-title mt-5 pb-3">
+    <h3>CRITICAL STOCK ON HAND </h3>
+</div>
+
+<div class="row">
+    <div class="col-12">
+
+          <div class="card card-body shadow fade show">
+
+            <table class="table table-bordered table-hover table-striped">
+                  <thead class="table-primary">
+                    <tr>
+                      <th scope="col">ITEM NAME</th>
+                      <th scope="col">BRAND NAME</th>
+                      <th scope="col">UOM</th>
+                      <th scope="col" class="text-right">SOH</th>
+                      <!-- <th scope="col" class="text-right">PRICE</th>
+                      <th scope="col" class="text-right">TOTAL PRICE</th> -->
+                      <th scope="col" class="text-right">CRITICAL VALUE</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in itembase %}
+                    <tr>
+                      <!-- condition if admin add a critical value -->
+                      {% if item.critical_value != 0 %}
+                        {% if item.critical_value > 0 %}
+
+                          {% if item.soh <= item.critical_value %}
+
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ item.brand_name }}</td>
+                            <td>{{ item.uom }}</td>
+                            <td class="item_soh text-right">{{ item.soh }}</td>
+                            <!-- <td class="text-right">{{ item.price }}</td>
+                            <td class="text-right">{{ item.total_price }}</td> -->
+                            <td class="text-right">{{ item.critical_value }}</td>
+
+                          {% endif %}
+                        
+                        <!-- default value is 10 if critical value is null -->
+                        {% else %}
+
+                          {% if item.soh <= none_value %}
+
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ item.brand_name }}</td>
+                            <td>{{ item.uom }}</td>
+                            <td class="item_soh text-right">{{ item.soh }}</td>
+                            <td class="text-right">{{ item.price }}</td>
+                            <td class="text-right">{{ item.total_price }}</td>
+                            <td class="text-right">{{ item.critical_value }}</td>
+
+                          {% endif %}
+
+                        {% endif %}
+
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+              
+                  </tbody>
+                </table>
+
+          </div>
+
+    </div>
+</div>
+
+<div class="pb-5">
+  <a href="{% url 'critical_stock_excel_export' %}"><button class="btn btn-success mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+</div>
+
+    
+
+{% endblock content %}

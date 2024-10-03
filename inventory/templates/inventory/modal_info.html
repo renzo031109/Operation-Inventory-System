@@ -1,0 +1,43 @@
+<!-- INVENTORY REPORT DELETE -->
+<div class="modal" id="info_item_report{{ item.id }}" tabindex="-1" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+
+            <h5 class="modal-title">TRANSACTION FORM</h5>
+            
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom:0;"><span class="text-muted">Transaction No : </span><strong> {{ item.id }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">Transaction Date :</span><strong> {{ item.date_added }}</strong> </p>
+          <p><span class="text-muted">Transaction Type : </span><strong> {{ item.remarks }}</strong> </p>
+          <hr>
+          <p style="margin-bottom:0;"><span class="text-muted">Name : </span><strong> {{ item.staff_name }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">Client : </span><strong>{{ item.client_name }}</strong> </p>
+          <p><span class="text-muted">Department :</span> <strong> {{ item.department_name }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">Item : </span><strong> {{ item.item_name }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">Brand : </span><strong> {{ item.brand_name }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">UOM : </span><strong> {{ item.uom }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">Quantity : </span><strong> {{ item.quantity }}</strong> </p>
+          <!-- <p style="margin-bottom:0;"><span class="text-muted">Price : </span><strong> {{ item.price }}</strong> </p> -->
+          {% if item.price %}
+          <p style="margin-bottom:0;"><span class="text-muted">Total Amount : </span><strong> {{ item.item_value }} </strong> </p>
+          {% endif %}
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-bs-dismiss="modal"><i class="fa-solid fa-rectangle-xmark"></i> CLOSE</button>
+
+            <!-- <form action="{% url 'delete_item' item.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> DELETE</button>
+            </form>  -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+

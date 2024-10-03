@@ -1,0 +1,26 @@
+{% extends 'base.html'  %}
+
+{% load static %}
+
+{% block title %}
+Thank You
+{% endblock title %}
+
+
+{% block content %}
+
+<div class="card text-center mt-5 pb-5 shadow fade show">
+    <div class="card-header">
+      <h3>Thank You!</h3>
+    </div>
+    <div class="card-body">
+      <img src="{% static 'media/check.jpg' %}">
+      <h5 class="card-title">Your form has been submitted. </h5>
+      <p class="card-text"></p>
+      <a href="{% url 'get_item' %}" class="btn btn-primary">Submit Form Again</a>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

@@ -1,0 +1,55 @@
+
+<!-- SUMMARY DELETE -->
+<div class="modal" id="delete{{ item.id }}" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">DELETE ITEM</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to remove <strong>{{ item.item_name }}</strong> with brand <strong>{{ item.brand_name }} ?</strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CANCEL</button>
+
+            <form action="{% url 'delete_itembase' item.item_code %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ item.id }}"><i class="fa-solid fa-trash"></i> DELETE</button>
+            </form> 
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- INVENTORY REPORT DELETE -->
+  <div class="modal" id="delete_item_report{{ item.id }}" tabindex="-1" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">DELETE TRANSACTION</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to remove this transaction ?
+          <p>Transaction No: <strong>{{ item.id }}</strong> </p>
+          <p>Item Name: <strong>{{ item.item_name }}</strong> 
+          <p>Brand Name: <strong>{{ item.brand_name }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-rectangle-xmark"></i> CANCEL</button>
+
+            <form action="{% url 'delete_item' item.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> DELETE</button>
+            </form> 
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+

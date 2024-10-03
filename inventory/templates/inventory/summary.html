@@ -1,0 +1,107 @@
+{% extends 'base.html'  %}
+
+{% block title %}
+INVENTORY REPORT
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% load sorting_tags %}
+
+
+{% block content %}
+
+
+<!-- filter option -->
+
+<button class="btn btn-primary mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+<a href="{% url 'export_file_summary' %}"><button class="btn btn-primary mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+
+<div class="card card-body mt-3" id="filter-slide">
+      <h5>FILTER BY:</h5>
+      <form action="" method="get" class="form-control-sm">
+
+          {{ itemFilter.form | crispy }}
+
+          <button class="btn btn-primary" type="submit">SEARCH</button>
+
+      </form>
+
+</div>
+
+
+<div class="card card-body mt-3 mb-5 shadow fade show">
+<table class="table table-bordered table-hover table-striped">
+  <center><h3 class="ititles">INVENTORY REPORT</h3></center>
+    <thead class="table-primary">
+      <tr>
+        <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
+        <th scope="col">{% anchor brand_name _("BRAND NAME") %}</th>
+        <th scope="col">{% anchor uom _("UOM") %}</th>
+        <th scope="col" class="text-right">{% anchor soh _("SOH") %}</th>
+        <!-- <th scope="col" class="text-right">{% anchor price _("PRICE") %}</th>
+        <th scope="col" class="text-right">{% anchor total_price _("TOTAL PRICE") %}</th>
+        <th scope="col" class="text-right">{% anchor total_value _("TOTAL BALANCE") %}</th> -->
+        <th scope="col">{% anchor date_added _("DATE") %}</th>
+        <th scope="col">{% anchor critical_value _("CRITICAL VALUE") %}</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% autosort items as sorted_items %}
+      {% for item in sorted_items %}
+      <tr>
+        <td>{{ item.item_name }}</td>
+        <td>{{ item.brand_name }}</td>
+        <td>{{ item.uom }}</td>
+        <td class="item_soh text-right">{{ item.soh }}</td>
+        <!-- <td class="text-right">{{ item.price }}</td>
+        <td class="text-right">{{ item.total_price }}</td>
+        <td class="text-right">{{ item.total_value }}</td> -->
+        <td>{{ item.date_added }}</td>
+        <td>{{ item.critical_value }}</td>
+        <td>
+          <center>
+              <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete{{ item.id }}"><i class="fa-solid fa-trash"></i></button>
+          </center>
+
+          {% include 'inventory/modal_delete.html' %}
+
+        </td>
+      </tr>
+
+      {% endfor %}
+      
+      <!-- <tr>
+        <td colspan="5" ><center><strong>GRAND TOTAL</strong></center></td>
+        <td class="text-right"><strong>{{ total_value | floatformat:2 }}</strong></td>
+        <td></td>
+        <td></td>
+      </tr> -->
+
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- <div class="pagination justify-content-center mt-5 pb-5 shadow fade show">
+  <span class="step-links">
+      {% if page_obj.has_previous %}
+          <a href="?page=1"><button class="btn btn-primary"><i class="fa-solid fa-backward-step"></i></button></a>
+          <a href="?page={{ page_obj.previous_page_number }}"><button class="btn btn-primary"><i class="fa-solid fa-caret-left"></i></button></a>
+      {% endif %}
+
+      <span class="current">
+        <button class="btn btn-primary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</button>.
+      </span>
+
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}"><button class="btn btn-primary"><i class="fa-solid fa-caret-right"></i></button></a>
+          <a href="?page={{ page_obj.paginator.num_pages }}"><button class="btn btn-primary"><i class="fa-solid fa-forward-step"></i></button></a>
+      {% endif %}
+  </span>
+</div> -->
+
+{% endblock content %}
+
+

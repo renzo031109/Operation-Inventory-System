@@ -1,0 +1,135 @@
+{% extends 'base.html'  %}
+
+{% block title %}
+DETAILED RELEASED REPORT
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% load sorting_tags %}
+
+{% block content %}
+
+
+
+<!-- filter option -->
+
+<button class="btn btn-primary mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+<a href="{% url 'export_file_inventory' %}"><button class="btn btn-primary mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+
+<div class="card card-body mt-3" id="filter-slide">
+      <h5>FILTER BY:</h5>
+      <form action="" method="get" class="form-control-sm">
+
+          {{ itemFilter.form | crispy }}
+
+          <button class="btn btn-primary" type="submit">SEARCH</button>
+
+      </form>
+</div>
+
+
+
+<div class="card card-body mt-3 mb-5 shadow fade show" style="width: 110%;">
+<table class="table table-bordered table-hover table-striped">
+  <center><h3 class="ititles">ITEMS' DETAILED REPORT</h3></center>
+    <thead class="table-primary"> 
+      <tr>
+        
+        <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
+        <th scope="col">{% anchor brand_name _("BRAND NAME") %}</th>
+        <th scope="col">{% anchor quantity _("QUANTITY") %}</th>
+        <th scope="col">{% anchor uom _("UOM") %}</th>
+        <!-- <th scope="col">{% anchor price _("PRICE") %}</th> -->
+        <th scope="col">{% anchor date_added _("DATE") %}</th>
+        <th scope="col">{% anchor remarks _("REMARKS") %}</th>
+        <th scope="col">{% anchor member _("STAFF NAME") %}</th>
+        <th scope="col">{% anchor site _("SITE") %}</th>
+        <th scope="col">{% anchor floor _("FLOOR") %}</th>
+        <th scope="col">{% anchor purpose _("PURPOSE") %}</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% autosort items as sorted_items %}
+      {% for item in sorted_items %}
+     
+      <tr>
+        <td>{{ item.item_name }}</td>
+        <td>{{ item.brand_name }}</td>
+        <td class="text-center">{{ item.quantity }}</td>
+        <td>{{ item.uom }}</td>
+        <!-- <td>{{ item.price }}</td> -->
+        <td>{{ item.date_added }}</td>
+        <td>{{ item.remarks }}</td>
+        <td>{{ item.member }}</td>
+
+        {% if item.site %}
+          <td>{{ item.site }}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+        {% if item.floor %}
+          <td>{{ item.floor }}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+        {% if item.purpose %}
+          <td>{{ item.purpose}}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+
+        {% if item.remarks != 'BEGINNING' %}
+        <td>          
+          <center>
+              <button type="submit" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#info_item_report{{ item.id }}"><i class="fa-solid fa-file-invoice"></i></button>
+          </center>
+        </td> 
+       <td>
+          <center>
+              <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete_item_report{{ item.id }}"><i class="fa-solid fa-trash"></i></button>
+          </center>
+          {% include 'inventory/modal_delete.html' %}
+          {% include 'inventory/modal_info.html' %}
+        {% else %}
+
+          <td></td>
+          <td></td>
+
+        {% endif %}
+        </td>
+      </tr>
+      
+      {% endfor %}
+      
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+<!-- <div class="pagination justify-content-center mt-5 pb-5">
+  <span class="step-links">
+      {% if page_obj.has_previous %}
+          <a href="?page=1"><button class="btn btn-primary"><i class="fa-solid fa-backward-step"></i></button></a>
+          <a href="?page={{ page_obj.previous_page_number }}"><button class="btn btn-primary"><i class="fa-solid fa-caret-left"></i></button></a>
+      {% endif %}
+
+      <span class="current">
+        <button class="btn btn-primary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</button>.
+      </span>
+
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}"><button class="btn btn-primary"><i class="fa-solid fa-caret-right"></i></button></a>
+          <a href="?page={{ page_obj.paginator.num_pages }}"><button class="btn btn-primary"><i class="fa-solid fa-forward-step"></i></button></a>
+      {% endif %}
+  </span>
+</div> -->
+
+
+
+
+{% endblock content %}

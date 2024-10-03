@@ -1,0 +1,48 @@
+.table td.fit, 
+.table th.fit {
+   white-space: nowrap;
+   width: 1%;
+}
+
+
+.btn-message-alert{
+   float: right
+}
+
+/* User greetings */
+#hi-name{
+   color: white;
+   padding-top: 7px;
+   padding-left: 12px;
+   padding-right: 10px;
+}
+
+body{
+   background-color: #ebeff5;
+}
+
+ /* For right align */
+.text-right {
+   text-align: right
+}
+
+ /* For right align */
+.text-center {
+   text-align: center
+} *
+
+footer{ 
+background-color: #FFF;
+font-size: small;
+position: fixed;
+bottom: 0px;
+width: 400px;
+text-align: center;
+width: 100%;
+} /* one-line vertical centering */
+
+/* form color change */
+.form-label {
+   margin-bottom: .5rem;
+   color: slategrey;
+}

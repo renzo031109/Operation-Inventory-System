@@ -1,0 +1,36 @@
+{% extends 'base.html'  %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  New Item(s)
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+<div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
+
+
+  <div class="container mt-1 mb-4">
+    <center><h3>NEW ITEM</h3></center>
+    <center><p>(will only be used if custodian has to add a new line item)</p></center>
+  </div>
+ 
+    <div class="container">
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-success addbtn">
+          <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true"></span> 
+          SUBMIT</button>
+      </form>
+
+    </div>
+
+
+</div>
+</div>
+
+
+{% endblock content %}
