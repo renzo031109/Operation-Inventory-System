@@ -20,30 +20,34 @@
   </head>
   <body>
 
+    
+
     {% include 'navbar.html' %}
 
     {% for message in messages %}
-      <div class="alert {{ message.tags }} alert-dismissible shadow fade show" data-bs-dismiss="alert" role="alert">
-          <button type="button" class="btn btn-alert-message {{ message.tags }}" data-dismiss="alert" aria-label="Close" id="btn-alert-message">
-              <span aria-hidden="true">&times;</span>
-          </button> 
-          <span>&nbsp&nbsp</span>{{ message | safe }}
-      </div>
-      {% endfor %}
+    <div class="alert {{ message.tags }} alert-dismissible shadow fade show" data-bs-dismiss="alert" role="alert">
+        <button type="button" class="btn btn-alert-message {{ message.tags }}" data-dismiss="alert" aria-label="Close" id="btn-alert-message">
+            <span aria-hidden="true">&times;</span>
+        </button> 
+        <span>&nbsp&nbsp</span>{{ message | safe }}
+    </div>
+    {% endfor %}
 
-    <div class="container-xxl">
-      
 
-        {% block content %}
-        {% endblock content %}
+    <div class="container-fluid">
 
-        <footer class="pt-1">
-          <div id="myfooter">
-          <p>© 2024 Shore360, Inc. | S360 OPERATIONS' SUPPLIES by IT Projects Team. All rights reserved. </p>
-          </div>
-        </footer>
+      {% block content %}
+      {% endblock content %}
+
+    
 
     </div>
+
+    <footer class="pt-1">
+      <div id="myfooter">
+      <p>© 2024 Shore360, Inc. | S360 OPERATIONS' SUPPLIES by IT Projects Team. All rights reserved. </p>
+      </div>
+    </footer>
 
 
     <!-- fontawesome -->
