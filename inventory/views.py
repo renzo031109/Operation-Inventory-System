@@ -15,6 +15,7 @@ from openpyxl.styles.borders import Border, Side, BORDER_THIN
 from openpyxl import Workbook
 from datetime import datetime
 from openpyxl.styles import *
+from urllib.parse import quote
 
 
 # # #set universal variable for user settings.
