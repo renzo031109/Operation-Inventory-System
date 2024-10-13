@@ -13,7 +13,7 @@ RELEASED ITEM FORM
 
   <div class="container mt-3">
 
-    <form class="form-horizontal" method="POST" action="">
+    <form class="form-horizontal" method="POST" id="get_item_form" action="">
     {% csrf_token %}
     {{ formset.management_form }}
 
@@ -92,8 +92,14 @@ RELEASED ITEM FORM
   </div>
 </div>
 </div>
+
+
 <!-- Call the script for the formset -->
 {% include 'inventory/form_script.html' %}
+
+<!-- load floor data -->
+{% include 'inventory/form_load_select_floor.html' %}
+
 
 {% endblock %}
 

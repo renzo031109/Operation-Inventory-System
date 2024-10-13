@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import modelformset_factory, BaseFormSet
-from .models import Item, ItemBase
+from .models import Item, ItemBase, Floor
 
         
 class ItemNewForm(forms.ModelForm):
@@ -39,9 +39,12 @@ class ItemNewForm(forms.ModelForm):
 
 
 #Formset for Get Item
-ItemModelFormSet = modelformset_factory(
-    Item, 
-    fields=('item_code',
+
+class ItemGetForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = [
+            'item_code',
             'quantity','item_name',
             'brand_name',
             # 'client_name',
@@ -53,21 +56,21 @@ ItemModelFormSet = modelformset_factory(
             'site',
             'floor',
             'purpose'
-            ),
-    extra=1,
-    labels={
-        # 'firstName':'FIRST NAME',
-        # 'middleName': 'MIDDLE NAME',
-        # 'lastName': 'LAST NAME',
-        # 'client_name': 'CLIENT NAME',
-        # 'dapartment_name': 'DEPARTMENT NAME',
-        'member': 'STAFF NAME',
-        'site': 'SITE',
-        'floor': 'FLOOR',
-        'purpose': 'PURPOSE'
+            ]
+        
+        labels = {
+            # 'firstName':'FIRST NAME',
+            # 'middleName': 'MIDDLE NAME',
+            # 'lastName': 'LAST NAME',
+            # 'client_name': 'CLIENT NAME',
+            # 'dapartment_name': 'DEPARTMENT NAME',
+            'member': 'STAFF NAME',
+            'site': 'SITE',
+            'floor': 'FLOOR',
+            'purpose': 'PURPOSE'
+        }
 
-    },
-    widgets={
+        widgets={
         'item_code': forms.Select(attrs={
             'class':'form-control form-select',
             'autocomplete': 'off',
@@ -117,15 +120,28 @@ ItemModelFormSet = modelformset_factory(
             'class':'form-control',    
             }),
         'floor': forms.Select(attrs={
-            'class':'form-control',    
+            'class':'form-control', 
             }),
         'purpose': forms.TextInput(attrs={
             'class':'form-control',
             }),
-  
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['floor'].queryset = Floor.objects.none()
 
-    }
-)
+        if 'floor' in self.data:
+            try:
+                floor_id = int(self.data.get('country'))
+                self.fields['floor'].queryset = Floor.objects.filter(floor_id=floor_id).order_by('floor')
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            self.fields['floor'].queryset = self.instance.site.floor_set.order_by('floor')
+
+ItemModelFormSet = modelformset_factory(Item, form=ItemGetForm) 
+
 
 
 #Formset for Add Item

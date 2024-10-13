@@ -1,5 +1,39 @@
 from django.db import models
 
+
+class Site(models.Model):
+    site = models.CharField(max_length=200)  
+
+    class Meta:
+        ordering = ["site"]
+
+    def __str__(self):
+        return self.site
+
+    #save input to uppercase
+    def save(self):
+        self.site = self.site.upper()
+        super(Site, self).save()  
+
+
+
+class Floor(models.Model):
+    floor = models.CharField(max_length=200)  
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["floor"]
+
+    def __str__(self):
+        return self.floor
+
+    #save input to uppercase
+    def save(self):
+        self.floor = self.floor.upper()
+        super(Floor, self).save() 
+
+
+
 class Client(models.Model):
     client = models.CharField(max_length=200)
 
@@ -108,35 +142,6 @@ class TeamMember(models.Model):
         self.member = self.member.upper()
         super(TeamMember, self).save()
 
-
-class Site(models.Model):
-    site = models.CharField(max_length=200)  
-
-    class Meta:
-        ordering = ["site"]
-
-    def __str__(self):
-        return self.site
-
-    #save input to uppercase
-    def save(self):
-        self.site = self.site.upper()
-        super(Site, self).save()  
-
-
-class Floor(models.Model):
-    floor = models.CharField(max_length=200)  
-
-    class Meta:
-        ordering = ["floor"]
-
-    def __str__(self):
-        return self.floor
-
-    #save input to uppercase
-    def save(self):
-        self.floor = self.floor.upper()
-        super(Floor, self).save()  
 
 class Item(models.Model):
     item_code = models.ForeignKey(ItemCode, on_delete=models.CASCADE, null=True)

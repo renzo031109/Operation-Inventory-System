@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Item, ItemBase, ItemCode, UOM, Site, TeamMember
+from .models import Item, ItemBase, ItemCode, UOM, Site, TeamMember, Floor
 from .forms import ItemNewForm, ItemModelFormSet, ItemModelFormSetAdd
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
@@ -16,6 +16,9 @@ from openpyxl import Workbook
 from datetime import datetime
 from openpyxl.styles import *
 from urllib.parse import quote
+
+from django.http import JsonResponse
+import json
 
 
 # # #set universal variable for user settings.
@@ -651,4 +654,8 @@ def export_excel_summary(request):
     return response
 
 
-
+def load_floor(request):
+    data = json.loads(request.body)
+    floor = Floor.objects.filter(site__id=data['user_id'])
+    print(floor)
+    return JsonResponse(list(floor.values('id','floor')), safe=False)
