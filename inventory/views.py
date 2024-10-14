@@ -396,7 +396,6 @@ def get_item(request):
                     get_floor_name = form.cleaned_data.get('floor')
                     get_purpose_name = form.cleaned_data.get('purpose')
 
-
                     # #populate the list from the user input
                     # staff_name_list.append(get_staff_name)
                     # client_name_list.append(get_client_name)
@@ -474,7 +473,7 @@ def get_item(request):
             
         else:
             messages.error(request, "Invalid Input!")
-
+            
     else:
         formset = ItemModelFormSet(queryset=Item.objects.none())
 
@@ -654,8 +653,12 @@ def export_excel_summary(request):
     return response
 
 
-def load_floor(request):
-    data = json.loads(request.body)
-    floor = Floor.objects.filter(site__id=data['user_id'])
-    print(floor)
-    return JsonResponse(list(floor.values('id','floor')), safe=False)
+#This is connected to floor ajax value
+def load_floors(request):
+    site_id = request.GET.get('site_id')
+    floors = Floor.objects.filter(site_id=site_id).all()
+    context = {'floors': floors}
+    return render(request, 'inventory/floor_dropdown_list_options.html', context)
+
+
+    

@@ -131,12 +131,12 @@ class ItemGetForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['floor'].queryset = Floor.objects.none()
 
-        if 'floor' in self.data:
+        if 'site' in self.data:
             try:
-                floor_id = int(self.data.get('country'))
-                self.fields['floor'].queryset = Floor.objects.filter(floor_id=floor_id).order_by('floor')
+                site_id = int(self.data.get('site'))
+                self.fields['floor'].queryset = Floor.objects.filter(site_id=site_id).order_by('floor')
             except (ValueError, TypeError):
-                pass
+                pass # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
             self.fields['floor'].queryset = self.instance.site.floor_set.order_by('floor')
 

@@ -13,7 +13,7 @@ RELEASED ITEM FORM
 
   <div class="container mt-3">
 
-    <form class="form-horizontal" method="POST" id="get_item_form" action="">
+    <form class="form-horizontal" method="POST" id="get_item_form" data-floor-url="{% url 'ajax_load_floor' %}" action="">
     {% csrf_token %}
     {{ formset.management_form }}
 

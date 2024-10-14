@@ -13,6 +13,6 @@ urlpatterns = [
     path('export_file_inventory/', views.export_excel_inventory, name='export_file_inventory'),
     path('export_file_summary/', views.export_excel_summary, name='export_file_summary'),
 
-    path('load_floor/', views.load_floor, name='load_floor')
+    path('load_floors/', views.load_floors, name='ajax_load_floor'),
 
 ]

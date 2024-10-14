@@ -3,71 +3,32 @@
 
 <script type="text/javascript">
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
-  
-  
-        let site_field = document.getElementById("id_form-0-site")
-        let floor_field = document.getElementById("id_form-0-floor")
-        
-        site_field.addEventListener("change", pickState)
-        function pickState(e){
-            country_id = e.target.value
-            const data = { user_id: country_id}
-            let url = " {% url 'load_floor' %} "
-  
-  fetch(url, {
-  method: 'POST', // or 'PUT'
-  headers: {
-  'Content-Type': 'application/json',
-  'X-CSRFToken': csrftoken
-  },
-  body: JSON.stringify(data),
-  })
-  .then(response => response.json())
-  .then(data => {
-  console.log('Success:', data[0]['floor']);
-  
-  floor_field.innerHTML = `<option value = "" selescted>---------------</option>`
-  for(let i = 0; i<data.length; i++){
-  floor_field.innerHTML += `<option value = "${data[i]["id"]}" selescted>${data[i]["floor"]}</option>`
-  
-  }
-  })
-  .catch((error) => {
-  console.error('Error:', error);
-  });
-  
-    }
-  
-  
-  
-  
-  
-  
-    let input = document.getElementById("id_name")
-    let select = document.getElementsByTagName("select")
-    console.log(select)
-  
-    input.classList.add("form-control")
-  
-    for(let i = 0; i <select.length; i++){
-        select[i].classList.add("form-select")
-    }
-  </script>
+$("#id_form-0-site").change(function () {
+        const url = $("#get_item_form").attr("data-floor-url");  // get the url of the `load_cities` view
+        const siteId = $(this).val();  // get the selected country ID from the HTML input
 
-  {% endblock %}
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'site_id': siteId       // add the country id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_form-0-floor").html(data);  // replace the contents of the city input with the data that came from the server
+                /*
+
+                let html_data = '<option value="">---------</option>';
+                data.forEach(function (city) {
+                    html_data += `<option value="${city.id}">${city.name}</option>`
+                });
+                console.log(html_data);
+                $("#id_city").html(html_data);
+
+                */
+            }
+        });
+
+    });
+
+</script>
+
+{% endblock %}
