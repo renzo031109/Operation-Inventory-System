@@ -657,6 +657,7 @@ def export_excel_summary(request):
 def load_floors(request):
     site_id = request.GET.get('site_id')
     floors = Floor.objects.filter(site_id=site_id).all()
+    print(list(floors.values('id','floor')))
     context = {'floors': floors}
     return render(request, 'inventory/floor_dropdown_list_options.html', context)
 
