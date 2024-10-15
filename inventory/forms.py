@@ -7,6 +7,7 @@ class ItemNewForm(forms.ModelForm):
     class Meta:
         model = ItemBase
         fields = [
+            'site',
             'item_name',
             'brand_name',
             'soh','uom',
@@ -16,6 +17,7 @@ class ItemNewForm(forms.ModelForm):
             'critical_value'
             ]
         labels = {
+            'site': 'SITE',
             'item_name': 'ITEM NAME',
             'brand_name': 'BRAND NAME (NONE if N/A)',
             'soh': 'BEGINNING BALANCE',
@@ -23,10 +25,11 @@ class ItemNewForm(forms.ModelForm):
             'item_code': 'ITEM CODE',
             'uom':'UOM',
             'remarks' : 'REMARKS',
-            'critical_value': 'CRITICAL VALUE'
+            'critical_value': 'CRITICAL VALUE',
 
         }
         widgets = {
+            'site': forms.Select(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
             'item_name': forms.TextInput(attrs={'class':'ItemNewForm','autocomplete': 'off'}),
             'brand_name': forms.TextInput(attrs={'class':'ItemNewForm', 'value':'NONE', 'autocomplete': 'off'}),
             'soh': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
@@ -34,7 +37,7 @@ class ItemNewForm(forms.ModelForm):
             # 'price': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
             'item_code': forms.TextInput(attrs={'class':'ItemNewForm','autocomplete': 'off','type':'hidden'}),
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'}),
-            'critical_value': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'})
+            'critical_value': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
         }
 
 

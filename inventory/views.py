@@ -9,6 +9,7 @@ from .forms import ItemNewForm, ItemModelFormSet, ItemModelFormSetAdd
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
 # from django.core.paginator import Paginator
+from django.core.exceptions import ValidationError
 
 #for export excel imports
 from openpyxl.styles.borders import Border, Side, BORDER_THIN
@@ -175,25 +176,42 @@ def new_item(request):
             form_item_brand = request.POST.get('brand_name')
             form_item_soh = request.POST.get('soh')
             form_item_uom = request.POST.get('uom')
+            form_item_site = request.POST.get('site')
             # form_item_price = request.POST.get('price')
 
-            #convert UOM id to values of foreign key
+            #convert values of foreign key
             uom_value = UOM.objects.get(id=form_item_uom)
+            site_value = Site.objects.get(id=form_item_site)
          
             #using try-except method in case of null value
-            try:
-                record_name = ItemBase.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
 
-                for record in record_name:
-                    if record.item_name.upper() == form_item_name.upper() and record.brand_name.upper() == form_item_brand.upper():
-                        messages.error(request, "Item already exist!")
-                        return redirect('new_item')
+            try:
+
+                if ItemBase.objects.filter(item_name__iexact=form_item_name).exists() and \
+                    ItemBase.objects.filter(brand_name__iexact=form_item_brand).exists() and \
+                        ItemBase.objects.filter(brand_name__iexact=form_item_site).exists():
+
+                    item_name_duplicate = form_item_name.upper()
+                    item_brand_duplicate = form_item_brand.upper()
+                    messages.error(request, f"The value '{item_name_duplicate} | {item_brand_duplicate} ' already exists in the database. Please enter a different value.")
+                    return redirect('new_item')
+            
+            # try:
+            #     record_name = ItemBase.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
+
+            #     for record in record_name:
+            #         if record.item_name.upper() == form_item_name.upper() and record.brand_name.upper() == form_item_brand.upper():
+                    
+            #             messages.error(request, "Item already exist!")
+            #             return redirect('new_item')
                        
             except:
-                record_name = None
+                pass
 
-            #assign default value to remarks
-            concat = form_item_name + " | " + form_item_brand
+
+
+            #assign default value to itemcode
+            concat = form_item_site + " | " + form_item_name + " | " + form_item_brand
             itemcode = ItemCode(code=concat)
 
             #Assign form to a variable
@@ -226,6 +244,7 @@ def new_item(request):
                                     member=member,
                                     # client_name=client,
                                     # department_name=department
+                                    site=site_value
                                     )
             
 

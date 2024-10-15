@@ -75,6 +75,7 @@ class ItemFilter(django_filters.FilterSet):
 
 
 class ItemBaseFilter(django_filters.FilterSet):
+    site = ChoiceFilter(field_name='site', label="SITE", choices=site_list)
     item_name = CharFilter(field_name='item_name', lookup_expr='icontains', label="ITEM NAME")
     brand_name = CharFilter(field_name='brand_name', lookup_expr='icontains', label="BRAND NAME")
     date_from = DateFilter(field_name='date_added', lookup_expr='date__gte', label="DATE FROM", widget=DateInput(attrs={'type': 'date'}))
@@ -82,4 +83,4 @@ class ItemBaseFilter(django_filters.FilterSet):
 
     class Meta:
         model = ItemBase
-        fields = ['item_name','brand_name','date_from','date_to']
+        fields = ['site','item_name','brand_name','date_from','date_to']

@@ -35,6 +35,7 @@ INVENTORY REPORT
   <center><h3 class="ititles">INVENTORY REPORT</h3></center>
     <thead class="table-primary">
       <tr>
+        <th scope="col">{% anchor site _("SITE") %}</th>
         <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
         <th scope="col">{% anchor brand_name _("BRAND NAME") %}</th>
         <th scope="col">{% anchor uom _("UOM") %}</th>
@@ -51,6 +52,7 @@ INVENTORY REPORT
       {% autosort items as sorted_items %}
       {% for item in sorted_items %}
       <tr>
+        <td>{{ item.site }}</td>
         <td>{{ item.item_name }}</td>
         <td>{{ item.brand_name }}</td>
         <td>{{ item.uom }}</td>

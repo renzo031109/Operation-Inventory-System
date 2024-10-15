@@ -106,6 +106,7 @@ class ItemBase(models.Model):
     remarks = models.CharField(max_length=50, null=True)
     uom = models.ForeignKey(UOM, on_delete=models.CASCADE, null=True)
     critical_value = models.IntegerField(null=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["item_name"]
@@ -162,8 +163,8 @@ class Item(models.Model):
     # middleName = models.CharField(max_length=100, null=True, blank=True)
 
     member = models.ForeignKey(TeamMember, on_delete=models.CASCADE, null=True, blank=True)
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, null=True, blank=True)
-    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, null=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
+    floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True)
     purpose = models.TextField(null=True, blank=True)
     
     class Meta:
