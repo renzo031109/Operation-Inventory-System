@@ -133,7 +133,7 @@ def delete_item(request, id):
 
                 print("negative")
 
-            # item_soh.soh = updated_soh
+            item_soh.soh = updated_soh
             # item_soh.total_price = updated_total_price
             # item_soh.total_value = item_val
 
@@ -184,34 +184,24 @@ def new_item(request):
             site_value = Site.objects.get(id=form_item_site)
          
             #using try-except method in case of null value
-
             try:
+                #check duplicate item for itema name, brand and site
+                if ItemBase.objects.filter(item_name__iexact=form_item_name).exists():
+                    if ItemBase.objects.filter(brand_name__iexact=form_item_brand).exists():
+                        if ItemBase.objects.filter(site=form_item_site).exists():
 
-                if ItemBase.objects.filter(item_name__iexact=form_item_name).exists() and \
-                    ItemBase.objects.filter(brand_name__iexact=form_item_brand).exists() and \
-                        ItemBase.objects.filter(brand_name__iexact=form_item_site).exists():
-
-                    item_name_duplicate = form_item_name.upper()
-                    item_brand_duplicate = form_item_brand.upper()
-                    messages.error(request, f"The value '{item_name_duplicate} | {item_brand_duplicate} ' already exists in the database. Please enter a different value.")
-                    return redirect('new_item')
-            
-            # try:
-            #     record_name = ItemBase.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
-
-            #     for record in record_name:
-            #         if record.item_name.upper() == form_item_name.upper() and record.brand_name.upper() == form_item_brand.upper():
-                    
-            #             messages.error(request, "Item already exist!")
-            #             return redirect('new_item')
-                       
+                            item_name_duplicate = form_item_name.upper()
+                            item_brand_duplicate = form_item_brand.upper()
+                            messages.error(request, f"The value '{item_name_duplicate} | {item_brand_duplicate} ' already exists in the database. Please enter a different value.")
+                            return redirect('new_item')
+                                     
             except:
+                #continue
                 pass
 
-
-
             #assign default value to itemcode
-            concat = form_item_site + " | " + form_item_name + " | " + form_item_brand
+            # concat = site_value + " | " + form_item_name + " | " + form_item_brand
+            concat = str(site_value) + " | " + form_item_name + " | " + form_item_brand
             itemcode = ItemCode(code=concat)
 
             #Assign form to a variable
@@ -244,7 +234,9 @@ def new_item(request):
                                     member=member,
                                     # client_name=client,
                                     # department_name=department
-                                    site=site_value
+                                    site=site_value,
+                                    purpose="NEW ITEM"
+
                                     )
             
 
@@ -679,6 +671,5 @@ def load_floors(request):
     print(list(floors.values('id','floor')))
     context = {'floors': floors}
     return render(request, 'inventory/floor_dropdown_list_options.html', context)
-
 
     
