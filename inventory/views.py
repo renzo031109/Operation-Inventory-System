@@ -182,28 +182,19 @@ def new_item(request):
             #convert values of foreign key
             uom_value = UOM.objects.get(id=form_item_uom)
             site_value = Site.objects.get(id=form_item_site)
-         
-            #using try-except method in case of null value
-            try:
-                #check duplicate item for itema name, brand and site
-                if ItemBase.objects.filter(item_name__iexact=form_item_name).exists():
-                    if ItemBase.objects.filter(brand_name__iexact=form_item_brand).exists():
-                        if ItemBase.objects.filter(site=form_item_site).exists():
 
-                            item_name_duplicate = form_item_name.upper()
-                            item_brand_duplicate = form_item_brand.upper()
-                            messages.error(request, f"The value '{item_name_duplicate} | {item_brand_duplicate} ' already exists in the database. Please enter a different value.")
-                            return redirect('new_item')
-                                     
-            except:
-                #continue
-                pass
+            #formulate the itemcode
+            concat = form_item_name + " | " + form_item_brand + " - " + str(site_value)
 
-            #assign default value to itemcode
-            # concat = site_value + " | " + form_item_name + " | " + form_item_brand
-            concat = str(site_value) + " | " + form_item_name + " | " + form_item_brand
-            itemcode = ItemCode(code=concat)
+            #check if the item exist
+            if ItemBase.objects.filter(item_code__iexact=concat).exists():
+                messages.error(request, f"The value '{concat}' already exists in the database. Please enter a different value.")
+                return redirect('new_item')
+            
+            itemcode = ItemCode(code=concat, site=site_value)
 
+            print(itemcode)
+   
             #Assign form to a variable
             itemNewForm = form.save(commit=False)
 
@@ -275,6 +266,10 @@ def new_item(request):
 @login_required
 def add_item(request):
 
+    #Initiate a list variable for the input select fields
+    site_name_list = []
+
+
     if request.method == 'POST':
         formset = ItemModelFormSetAdd(request.POST)
         if formset.is_valid():
@@ -285,10 +280,17 @@ def add_item(request):
                     
                     #get the item name from the form 
                     add_item_code = form.cleaned_data.get('item_code')
+
                     #get the item qty from the form
                     add_item_qty = form.cleaned_data.get('quantity')
+
                     # #get the price from the form
                     # add_item_price = form.cleaned_data.get('price')
+                    add_item_qty = form.cleaned_data.get('quantity')
+
+                    #get the site from the form
+                    add_item_site = form.cleaned_data.get('site')
+
                     
                     try:
                         #get the item SOH from model table
@@ -320,12 +322,21 @@ def add_item(request):
                         item_soh = 0
                         soh = int(item_soh) + int(add_item_qty)
 
+                    #create an array list
+                    site_name_list.append(add_item_site)
+ 
+                    #assign the first list to all items
+                    site_name = site_name_list[0]
+                    
+
                     #assign default values  
                     itemAddForm = form.save(commit=False)    
                     itemAddForm.remarks = "IN"
                     itemAddForm.item_name = item_soh.item_name
                     itemAddForm.brand_name = item_soh.brand_name
                     itemAddForm.uom = item_soh.uom
+                    itemAddForm.site = site_name
+                    itemAddForm.purpose = "STOCK REPLENISHMENT"
                     # itemAddForm.item_value = added_item_amount
 
                     #get the current user
@@ -671,5 +682,16 @@ def load_floors(request):
     print(list(floors.values('id','floor')))
     context = {'floors': floors}
     return render(request, 'inventory/floor_dropdown_list_options.html', context)
+
+#This is connected to itemcode ajax value
+def load_item_code(request):
+    site_id = request.GET.get('site_id')
+    item_codes = ItemCode.objects.filter(site_id=site_id).all()
+    print(list(item_codes.values('id','code')))
+    context = {'item_codes': item_codes}
+    return render(request, 'inventory/item_code_dropdown_list_options.html', context)
+
+
+
 
     

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import modelformset_factory, BaseFormSet
-from .models import Item, ItemBase, Floor
+from .models import Item, ItemBase, Floor, ItemCode
 
         
 class ItemNewForm(forms.ModelForm):
@@ -145,14 +145,13 @@ class ItemGetForm(forms.ModelForm):
         elif self.instance.pk:
             self.fields['floor'].queryset = self.instance.site.floor_set.order_by('floor')
 
-ItemModelFormSet = modelformset_factory(Item, form=ItemGetForm) 
 
+class ItemAddForm(forms.ModelForm):
+    class Meta:
+        model = Item
 
-
-#Formset for Add Item
-ItemModelFormSetAdd = modelformset_factory(
-    Item, 
-    fields=(
+        fields=(
+        'site',
         'item_code',
         'quantity',
         'item_name',
@@ -160,16 +159,25 @@ ItemModelFormSetAdd = modelformset_factory(
         'staff_name',
         # 'client_name',
         # 'department_name',
-        # 'price'
-        ),
-    extra=1,
-    labels={
+        # 'price'   
+        )
+
+        labels={
+        'site': 'SITE',
         'staff_name': 'STAFF NAME',
         # 'client_name': 'CLIENT NAME',
         # 'dapartment_name': 'DEPARTMENT NAME',
         # 'price': 'PRICE'
-    },
-    widgets={
+        
+        }
+
+        widgets={
+        'site': forms.Select(attrs={
+            'class':'form-control form-select',
+            'autocomplete': 'off',
+            'placeholder':"SITE",
+            'required':True,
+            }),
         'item_code': forms.Select(attrs={
             'class':'form-control form-select',
             'autocomplete': 'off',
@@ -211,5 +219,32 @@ ItemModelFormSetAdd = modelformset_factory(
         #     }),
 
     }
-)
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Customizing the empty label for a select field
+        self.fields['site'].empty_label = "*** Please select the SITE ***"
+        self.fields['item_code'].queryset = ItemCode.objects.none()
+
+        #this will populate accdg to user choices on site
+        if 'form-0-site' in self.data:
+            try:
+                site_id = int(self.data.get('form-0-site'))
+                self.fields['item_code'].queryset = ItemCode.objects.filter(site_id=site_id).order_by('code')
+            except (ValueError, TypeError):
+                pass # invalid input from the client; ignore and fallback to empty City queryset
+        elif self.instance.pk:
+            self.fields['item_code'].queryset = self.instance.site.item_code_set.order_by('code')
+
+
+
+
+# modelformset functions
+
+ItemModelFormSet = modelformset_factory(Item, form=ItemGetForm, extra=1) 
+
+ItemModelFormSetAdd = modelformset_factory(Item, form=ItemAddForm, extra=1)
+
+
 

@@ -12,7 +12,7 @@ NEW PURCHASES
 <div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
   <div class="container mt-3">
 
-    <form class="form-horizontal" method="POST" action="">
+    <form class="form-horizontal" method="POST" id="add_item_form" data-item_code-url="{% url 'ajax_load_item_code' %}" action="">
     {% csrf_token %}
     {{ formset.management_form }}
 
@@ -23,6 +23,10 @@ NEW PURCHASES
 
                   <tr>
                     <th colspan="4"><center><h3>ADD ITEM QUANTITY FORM</h3></center></th>
+                  </tr>
+                  {% for form in formset %}
+                  <tr>
+                    <th colspan="4">{{ form.site }}</th>
                   </tr> 
                   <tr>  
                       <th scope="col" style="width:80%">Item Name</th>
@@ -32,9 +36,8 @@ NEW PURCHASES
                   </tr>
                 </thead>
                 <tbody class="form-row spacer">
-                    {% for form in formset %}
-                    <tr> 
                     
+                    <tr> 
                       <td>{{ form.item_code }}</td>
                       <!-- <td>{{ form.price }}</td> -->
                       <td>{{ form.quantity }}</td>
@@ -65,6 +68,11 @@ NEW PURCHASES
 <!-- Call the script for the formset -->
 {% include 'inventory/form_script_add.html' %}
 
+<!-- load itemcode data -->
+{% include 'inventory/form_load_select_item_code.html' %}
+
 {% endblock %}
+
+
 
 

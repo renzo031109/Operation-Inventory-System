@@ -14,5 +14,6 @@ urlpatterns = [
     path('export_file_summary/', views.export_excel_summary, name='export_file_summary'),
 
     path('load_floors/', views.load_floors, name='ajax_load_floor'),
+    path('load_item_code/', views.load_item_code, name='ajax_load_item_code'),
 
 ]
