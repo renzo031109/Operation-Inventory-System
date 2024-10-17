@@ -1,6 +1,6 @@
 import django_filters
 from django_filters import DateFilter, CharFilter, ChoiceFilter
-from .models import Item, ItemBase, Site, Floor, TeamMember
+from .models import Item, ItemBase, Site, Floor, TeamMember, DemandItems
 from django import forms
 
 
@@ -42,12 +42,20 @@ for value in floor:
     floor_list.append((value.id, value.floor))
 
 
-#Floor List
+#Member List
 member = TeamMember.objects.all()
 member_list = []
 
 for value in member:
     member_list.append((value.id, value.member))
+
+
+ #Demand Item List
+demand_item = DemandItems.objects.all()
+demand_item_list = []
+
+for value in demand_item:
+    demand_item_list.append((value.id, value.demand_item))
 
 
 
@@ -80,7 +88,8 @@ class ItemBaseFilter(django_filters.FilterSet):
     brand_name = CharFilter(field_name='brand_name', lookup_expr='icontains', label="BRAND NAME")
     date_from = DateFilter(field_name='date_added', lookup_expr='date__gte', label="DATE FROM", widget=DateInput(attrs={'type': 'date'}))
     date_to = DateFilter(field_name='date_added', lookup_expr='date__lte', label="DATE TO", widget=DateInput(attrs={'type': 'date'}))
+    demand_item = ChoiceFilter(field_name='demand_item', label="DEMAND ITEM", choices=demand_item_list)
 
     class Meta:
         model = ItemBase
-        fields = ['site','item_name','brand_name','date_from','date_to']
+        fields = ['site','item_name','brand_name','date_from','date_to','demand_item']

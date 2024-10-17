@@ -675,27 +675,13 @@ def export_excel_summary(request):
     return response
 
 
-# #This is connected to floor ajax value
-# def load_floors(request):
-#     site_id = request.GET.get('site_id')
-#     floors = Floor.objects.filter(site_id=site_id).all()
-#     print(list(floors.values('id','floor')))
-#     context = {'floors': floors}
-#     return render(request, 'inventory/floor_dropdown_list_options.html', context)
-
 #This is connected to itemcode ajax value
 def add_load_item_code(request, site_id):
     items = list(ItemCode.objects.filter(site_id=site_id).values('id', 'code'))
     return JsonResponse({'items': items})
 
-# #This is connected to itemcode ajax value
-# def load_item_code_get(request):
-#     floor_id = request.GET.get('floor_id')
-#     item_codes = ItemCode.objects.filter(floor_id=floor_id).all()
-#     print(list(item_codes.values('id','code')))
-#     context = {'item_codes': item_codes}
-#     return render(request, 'inventory/item_code_dropdown_list_options_get.html', context)
 
+#This is connected to itemcode ajax value
 def get_floors_and_items(request, site_id):
     floors = list(Floor.objects.filter(site_id=site_id).values('id', 'floor'))
     items = list(ItemCode.objects.filter(site_id=site_id).values('id', 'code'))

@@ -45,6 +45,7 @@ INVENTORY REPORT
         <th scope="col" class="text-right">{% anchor total_value _("TOTAL BALANCE") %}</th> -->
         <th scope="col">{% anchor date_added _("DATE") %}</th>
         <th scope="col">{% anchor critical_value _("CRITICAL VALUE") %}</th>
+        <th scope="col">{% anchor demand_item _("DEMAND ITEM") %}</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -62,6 +63,7 @@ INVENTORY REPORT
         <td class="text-right">{{ item.total_value }}</td> -->
         <td>{{ item.date_added }}</td>
         <td>{{ item.critical_value }}</td>
+        <td>{{ item.demand_item }}</td>
         <td>
           <center>
               <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete{{ item.id }}"><i class="fa-solid fa-trash"></i></button>

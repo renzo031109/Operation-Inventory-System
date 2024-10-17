@@ -82,7 +82,7 @@ class ItemCode(models.Model):
     
 
 class UOM(models.Model):
-    uom = models.CharField(max_length=30)
+    uom = models.CharField(max_length=100)
     
     def __str__(self):
         return self.uom
@@ -94,6 +94,21 @@ class UOM(models.Model):
     def save(self):
         self.uom= self.uom.upper()
         super(UOM, self).save()
+
+
+class DemandItems(models.Model):
+    demand_item = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return self.demand_item
+    
+    class Meta:
+        ordering = ["demand_item"]
+
+    #Save data to upper case
+    def save(self):
+        self.demand_item= self.demand_item.upper()
+        super(DemandItems, self).save()
 
 
 class ItemBase(models.Model):
@@ -109,6 +124,7 @@ class ItemBase(models.Model):
     uom = models.ForeignKey(UOM, on_delete=models.CASCADE, null=True)
     critical_value = models.IntegerField(null=True, blank=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    demand_item = models.ForeignKey(DemandItems, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["item_name"]
