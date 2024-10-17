@@ -13,7 +13,7 @@ RELEASED ITEM FORM
 
   <div class="container mt-3">
 
-    <form class="form-horizontal" method="POST" id="get_item_form" data-floor-url="{% url 'ajax_load_floor' %}" action="">
+    <form class="form-horizontal" method="POST" action="">
     {% csrf_token %}
     {{ formset.management_form }}
 
@@ -99,7 +99,7 @@ RELEASED ITEM FORM
 {% include 'inventory/form_script.html' %}
 
 <!-- load floor data -->
-{% include 'inventory/form_load_select_floor.html' %}
+{% include 'inventory/form_load_select_floor_and_item_code.html' %}
 
 
 {% endblock %}

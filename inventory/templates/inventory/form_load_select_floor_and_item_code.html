@@ -1,0 +1,23 @@
+
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const siteField = document.getElementById('id_form-0-site');
+
+        siteField.addEventListener('change', function() {
+            const siteId = siteField.value;
+
+            // create a Promise
+            fetch(`/load_floors_and_items/${siteId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const floorField = document.getElementById('id_form-0-floor');
+                    const itemField = document.getElementById('id_form-0-item_code');
+                    
+                    // generates and populates the dropdown menu options based on the data.floors array.
+                    floorField.innerHTML = data.floors.map(floor => `<option value="${floor.id}">${floor.floor}</option>`).join('');
+                    itemField.innerHTML = data.items.map(item => `<option value="${item.id}">${item.code}</option>`).join('');
+                });
+        });
+    });
+</script>

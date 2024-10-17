@@ -1,4 +1,4 @@
-
+<!-- 
 {% block custom_js %}
 
 <script type="text/javascript">
@@ -31,4 +31,27 @@ $("#id_form-0-site").change(function () {
 
 </script>
 
-{% endblock %}
+{% endblock %} -->
+
+
+
+
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const siteField = document.getElementById('id_form-0-site');
+
+        siteField.addEventListener('change', function() {
+            const siteId = siteField.value;
+
+            fetch(`/load_items/${siteId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const itemField = document.getElementById('id_form-0-item_code');
+                    itemField.innerHTML = data.items.map(item => `<option value="${item.id}">${item.code}</option>`).join('');
+                });
+        });
+    });
+</script>
+
+

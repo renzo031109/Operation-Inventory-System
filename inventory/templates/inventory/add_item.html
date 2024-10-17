@@ -12,7 +12,7 @@ NEW PURCHASES
 <div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
   <div class="container mt-3">
 
-    <form class="form-horizontal" method="POST" id="add_item_form" data-item_code-url="{% url 'ajax_load_item_code' %}" action="">
+    <form class="form-horizontal" method="POST" action="">
     {% csrf_token %}
     {{ formset.management_form }}
 

@@ -13,8 +13,9 @@ urlpatterns = [
     path('export_file_inventory/', views.export_excel_inventory, name='export_file_inventory'),
     path('export_file_summary/', views.export_excel_summary, name='export_file_summary'),
 
-    path('load_floors/', views.load_floors, name='ajax_load_floor'),
-    path('load_item_code/', views.load_item_code, name='ajax_load_item_code'),
-    path('load_item_code_get/', views.load_item_code, name='ajax_load_item_code_get'),
+    path('load_floors_and_items/<int:site_id>/', views.get_floors_and_items, name='ajax_load_floor'),
+    path('load_items/<int:site_id>/', views.add_load_item_code, name='ajax_load_item_code'),
+
+    # path('load_item_code_get/', views.load_item_code, name='ajax_load_item_code_get'),
 
 ]

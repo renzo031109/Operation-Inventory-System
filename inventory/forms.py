@@ -141,20 +141,15 @@ class ItemGetForm(forms.ModelForm):
             try:
                 site_id = int(self.data.get('form-0-site'))
                 self.fields['floor'].queryset = Floor.objects.filter(site_id=site_id).order_by('floor')
-            except (ValueError, TypeError):
-                pass # invalid input from the client; ignore and fallback to empty City queryset
-        elif self.instance.pk:
-            self.fields['floor'].queryset = self.instance.site.floor_set.order_by('floor')
-
-
-        if 'form-0-floor' in self.data:
-            try:
-                site_id = int(self.data.get('form-0-floor'))
                 self.fields['item_code'].queryset = ItemCode.objects.filter(site_id=site_id).order_by('code')
             except (ValueError, TypeError):
                 pass # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
-            self.fields['item_code'].queryset = self.instance.site.item_code_set.order_by('code')
+            self.fields['floor'].queryset = self.instance.site.floor_set.order_by('floor')
+            self.fields['item_code'].queryset = self.instance.site.itemcode_set.order_by('code')
+
+
+
 
         
 
@@ -236,7 +231,8 @@ class ItemAddForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Customizing the empty label for a select field
-        self.fields['site'].empty_label = "*** Please select the SITE ***"
+        self.fields['site'].empty_label = "*** Please select SITE ***"
+        self.fields['item_code'].empty_label = "******"
         self.fields['item_code'].queryset = ItemCode.objects.none()
 
         #this will populate accdg to user choices on site
@@ -248,8 +244,6 @@ class ItemAddForm(forms.ModelForm):
                 pass # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
             self.fields['item_code'].queryset = self.instance.site.item_code_set.order_by('code')
-
-
 
 
 # modelformset functions
