@@ -691,6 +691,14 @@ def load_item_code(request):
     context = {'item_codes': item_codes}
     return render(request, 'inventory/item_code_dropdown_list_options.html', context)
 
+#This is connected to itemcode ajax value
+def load_item_code_get(request):
+    floor_id = request.GET.get('floor_id')
+    item_codes = ItemCode.objects.filter(floor_id=floor_id).all()
+    print(list(item_codes.values('id','code')))
+    context = {'item_codes': item_codes}
+    return render(request, 'inventory/item_code_dropdown_list_options_get.html', context)
+
 
 
 

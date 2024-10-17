@@ -15,5 +15,6 @@ urlpatterns = [
 
     path('load_floors/', views.load_floors, name='ajax_load_floor'),
     path('load_item_code/', views.load_item_code, name='ajax_load_item_code'),
+    path('load_item_code_get/', views.load_item_code, name='ajax_load_item_code_get'),
 
 ]

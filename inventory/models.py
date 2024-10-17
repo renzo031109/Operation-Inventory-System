@@ -67,6 +67,7 @@ class Department(models.Model):
 class ItemCode(models.Model):
     code = models.CharField(max_length=200, null=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, null=True) 
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, null=True) 
 
     def __str__(self):
         return self.code
