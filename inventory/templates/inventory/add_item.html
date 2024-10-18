@@ -19,15 +19,24 @@ NEW PURCHASES
         <div class="row">
 
             <table class="table table-bordered table-hover mt-3">
-                <thead>
+              <thead>
 
-                  <tr>
-                    <th colspan="4"><center><h3>ADD ITEM QUANTITY FORM</h3></center></th>
-                  </tr>
-                  {% for form in formset %}
-                  <tr>
-                    <th colspan="4">{{ form.site }}</th>
-                  </tr> 
+                <tr>
+                  <th colspan="4"><center><h3>ADD ITEM QUANTITY FORM</h3></center></th>
+                </tr>
+                {% for form in formset %}
+                <tr></tr>
+                <tr>
+                  <th scope="col" style="width:10%">LOCATION</th>
+                  <th scope="col" style="width:80%">{{ form.site }}</th>
+                </tr> 
+         
+              </thead>
+            </table>
+
+            <table class="table table-bordered table-hover mt-3">
+                <thead>
+                
                   <tr>  
                       <th scope="col" style="width:80%">Item Name</th>
                       <!-- <th scope="col" style="width:20%">Price</th> -->

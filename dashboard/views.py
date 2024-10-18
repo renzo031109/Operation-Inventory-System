@@ -101,7 +101,8 @@ def critical_stock_excel_export(request):
                 'UOM',	
                 'SOH',	
                 # 'PRICE',	
-                'CRITICAL VALUE'
+                'CRITICAL VALUE',
+                'DEMAND'
                 ]
     row_num = 2
 
@@ -127,6 +128,7 @@ def critical_stock_excel_export(request):
                 if item.soh <= item.critical_value:
                     #convert object fields to string
                     uom = str(item.uom)
+                    demand_item = str(item.demand_item)
 
                     worksheet.append([
                     item.item_name,
@@ -134,7 +136,8 @@ def critical_stock_excel_export(request):
                     uom,
                     item.soh,
                     # item.price,
-                    item.critical_value
+                    item.critical_value,
+                    demand_item
                 ])
 
             #condition when critical_value is null  
@@ -149,7 +152,8 @@ def critical_stock_excel_export(request):
                     uom,
                     item.soh,
                     # item.price,
-                    item.critical_value
+                    item.critical_value,
+                    item.demand_item
                     ])
     
     workbook.save(response)

@@ -546,7 +546,8 @@ def export_excel_inventory(request):
                 'STAFF NAME',
                 'SITE',
                 'FLOOR',
-                'PURPOSE'	
+                'PURPOSE',
+                'DEMAND'	
                 ]
     row_num = 2
 
@@ -630,7 +631,8 @@ def export_excel_summary(request):
                 # 'PRICE',	
                 # 'TOTAL PRICE',
                 # 'TOTAL BALANCE',
-                'DATE'
+                'DATE',
+                'DEMAND'
                 ]
     row_num = 2
 
@@ -658,6 +660,7 @@ def export_excel_summary(request):
         #convert object fields to string
 
         uom = str(item.uom)
+        demand_item = str(item.demand_item)
         date_added = datetime.strftime(item.date_added,'%m/%d/%Y %H:%M:%S')
 
         worksheet.append([
@@ -669,6 +672,7 @@ def export_excel_summary(request):
             # item.total_price,
             # item.total_value,
             date_added,
+            demand_item
         ])
     
     workbook.save(response)
