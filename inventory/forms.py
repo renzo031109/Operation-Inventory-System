@@ -167,6 +167,7 @@ class ItemAddForm(forms.ModelForm):
         'item_name',
         'brand_name',
         'staff_name',
+        'uom'
         # 'client_name',
         # 'department_name',
         # 'price'   
@@ -175,6 +176,7 @@ class ItemAddForm(forms.ModelForm):
         labels={
         'site': 'SITE',
         'staff_name': 'STAFF NAME',
+        'uom': 'UOM'
         # 'client_name': 'CLIENT NAME',
         # 'dapartment_name': 'DEPARTMENT NAME',
         # 'price': 'PRICE'
@@ -214,7 +216,11 @@ class ItemAddForm(forms.ModelForm):
             }),
         'staff_name': forms.TextInput(attrs={
             'class':'form-control',
-     
+            }),
+        'uom': forms.Select(attrs={
+            'class':'form-control form-select',
+            'autocomplete': 'off',
+            'placeholder':"SITE"
             }),
         # 'client_name': forms.Select(attrs={
         #     'class':'form-control',

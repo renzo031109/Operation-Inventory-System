@@ -47,6 +47,7 @@ DETAILED RELEASED REPORT
         <th scope="col">{% anchor site _("SITE") %}</th>
         <th scope="col">{% anchor floor _("FLOOR") %}</th>
         <th scope="col">{% anchor purpose _("PURPOSE") %}</th>
+        <th scope="col">{% anchor demand_item _("DEMAND") %}</th>
         <th scope="col"></th>
         <th scope="col"></th>
       </tr>
@@ -79,6 +80,11 @@ DETAILED RELEASED REPORT
         {% endif %}
         {% if item.purpose %}
           <td>{{ item.purpose}}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+        {% if item.demand_item %}
+          <td>{{ item.demand_item}}</td>
         {% else %}
           <td>-</td>
         {% endif %}

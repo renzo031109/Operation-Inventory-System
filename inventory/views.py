@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Item, ItemBase, ItemCode, UOM, Site, TeamMember, Floor
+from .models import Item, ItemBase, ItemCode, UOM, Site, TeamMember, Floor, DemandItems
 from .forms import ItemNewForm, ItemModelFormSet, ItemModelFormSetAdd
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
@@ -178,10 +178,12 @@ def new_item(request):
             form_item_uom = request.POST.get('uom')
             form_item_site = request.POST.get('site')
             # form_item_price = request.POST.get('price')
+            form_item_demand_item = request.POST.get('demand_item')
 
             #convert values of foreign key
             uom_value = UOM.objects.get(id=form_item_uom)
             site_value = Site.objects.get(id=form_item_site)
+            demand_item_value = DemandItems.objects.get(id=form_item_demand_item)
 
             #formulate the itemcode
             concat = form_item_name + " | " + form_item_brand + " - " + str(site_value)
@@ -226,8 +228,8 @@ def new_item(request):
                                     # client_name=client,
                                     # department_name=department
                                     site=site_value,
-                                    purpose="NEW ITEM"
-
+                                    purpose="NEW ITEM",
+                                    demand_item = demand_item_value
                                     )
             
 
