@@ -50,7 +50,7 @@ for value in member:
     member_list.append((value.id, value.member))
 
 
-#Demand Item List
+ #Demand Item List
 demand_item = DemandItems.objects.all()
 demand_item_list = []
 
@@ -75,12 +75,11 @@ class ItemFilter(django_filters.FilterSet):
     # client= ChoiceFilter(field_name='client_name', label="CLIENT", choices=clients_list)
     site = ChoiceFilter(field_name='site', label="SITE", choices=site_list)
     floor = ChoiceFilter(field_name='floor', label="FLOOR", choices=floor_list)
-    demand_item = ChoiceFilter(field_name='demand_item', label="DEMAND", choices=demand_item_list)
 
    
     class Meta:
         model = Item
-        fields = ['item_name','brand_name','remarks','member','site','floor','date_from','date_to', 'demand_item']
+        fields = ['item_name','brand_name','remarks','member','site','floor','date_from','date_to']
 
 
 class ItemBaseFilter(django_filters.FilterSet):

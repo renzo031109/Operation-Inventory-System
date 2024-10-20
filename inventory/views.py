@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Item, ItemBase, ItemCode, UOM, Site, TeamMember, Floor, DemandItems
+from .models import Item, ItemBase, ItemCode, UOM, Site, TeamMember, Floor
 from .forms import ItemNewForm, ItemModelFormSet, ItemModelFormSetAdd
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
@@ -55,12 +55,18 @@ def summary_item(request):
     # for value in items:
     #     total_value += float(value.total_value)
 
+    # Compute Total Qty
+    total_soh = 0
+    for value in items:
+        total_soh += int(value.soh)
+
     context = {
         'items': items,
         'item_count': item_count,
         'itemFilter': itemFilter,
         # 'total_value': total_value
         # 'page_obj':page_obj
+        'total_soh': total_soh
         }
     return render(request, 'inventory/summary.html', context)
 
@@ -94,11 +100,18 @@ def inventory_item(request):
     
     itembase = ItemBase.objects.all()
 
+
+    # Compute Total Qty
+    total_quantity = 0
+    for value in items:
+        total_quantity += int(value.quantity)
+
     context = {
         'items': items, 
         'itembase': itembase,
         'item_count': item_count, 
         'itemFilter': itemFilter,
+        'total_quantity': total_quantity
         # 'page_obj': page_obj
         }
     return render(request,'inventory/inventory.html', context)
@@ -178,15 +191,13 @@ def new_item(request):
             form_item_uom = request.POST.get('uom')
             form_item_site = request.POST.get('site')
             # form_item_price = request.POST.get('price')
-            form_item_demand_item = request.POST.get('demand_item')
 
             #convert values of foreign key
             uom_value = UOM.objects.get(id=form_item_uom)
             site_value = Site.objects.get(id=form_item_site)
-            demand_item_value = DemandItems.objects.get(id=form_item_demand_item)
 
             #formulate the itemcode
-            concat = form_item_name + " | " + form_item_brand + " - " + str(site_value)
+            concat = form_item_name + " | " + form_item_brand + " (" + str(uom_value) +") " + " - " + str(site_value)
 
             #check if the item exist
             if ItemBase.objects.filter(item_code__iexact=concat).exists():
@@ -228,8 +239,8 @@ def new_item(request):
                                     # client_name=client,
                                     # department_name=department
                                     site=site_value,
-                                    purpose="NEW ITEM",
-                                    demand_item = demand_item_value
+                                    purpose="NEW ITEM"
+
                                     )
             
 

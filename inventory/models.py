@@ -184,8 +184,7 @@ class Item(models.Model):
     site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True)
     purpose = models.TextField(null=True, blank=True)
-    demand_item = models.ForeignKey(DemandItems, on_delete=models.SET_NULL, null=True, blank=True)
-
+    
     class Meta:
         ordering = ["-date_added"]
 
