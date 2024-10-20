@@ -12,9 +12,15 @@
           <p style="margin-bottom:0;"><span class="text-muted">Transaction Date :</span><strong> {{ item.date_added }}</strong> </p>
           <p><span class="text-muted">Transaction Type : </span><strong> {{ item.remarks }}</strong> </p>
           <hr>
-          <p style="margin-bottom:0;"><span class="text-muted">Name : </span><strong> {{ item.staff_name }}</strong> </p>
-          <p style="margin-bottom:0;"><span class="text-muted">Client : </span><strong>{{ item.client_name }}</strong> </p>
-          <p><span class="text-muted">Department :</span> <strong> {{ item.department_name }}</strong> </p>
+          <p style="margin-bottom:0;"><span class="text-muted">Name : </span><strong> 
+            
+            {%  if item.staff_name %}
+              {{ item.staff_name }}
+            {% else %}
+              ADMIN
+            {% endif %}
+
+          </strong> </p>
           <p style="margin-bottom:0;"><span class="text-muted">Item : </span><strong> {{ item.item_name }}</strong> </p>
           <p style="margin-bottom:0;"><span class="text-muted">Brand : </span><strong> {{ item.brand_name }}</strong> </p>
           <p style="margin-bottom:0;"><span class="text-muted">UOM : </span><strong> {{ item.uom }}</strong> </p>
