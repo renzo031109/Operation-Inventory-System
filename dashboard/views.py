@@ -96,6 +96,7 @@ def critical_stock_excel_export(request):
 
     # Add headers
     headers =   [
+                'site',
                 'ITEM NAME',	
                 'BRAND NAME',
                 'UOM',	
@@ -129,8 +130,10 @@ def critical_stock_excel_export(request):
                     #convert object fields to string
                     uom = str(item.uom)
                     demand_item = str(item.demand_item)
+                    site = str(item.site)
 
                     worksheet.append([
+                    site,
                     item.item_name,
                     item.brand_name,
                     uom,
