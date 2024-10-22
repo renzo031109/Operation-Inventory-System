@@ -1,6 +1,6 @@
 import django_filters
 from django_filters import DateFilter, CharFilter, ChoiceFilter
-from .models import Item, ItemBase, Site, Floor, TeamMember, DemandItems
+from .models import Item, ItemBase, Site, Floor, TeamMember, DemandItems, Division
 from django import forms
 
 
@@ -57,6 +57,13 @@ demand_item_list = []
 for value in demand_item:
     demand_item_list.append((value.id, value.demand_item))
 
+#Division List
+division = Division.objects.all()
+division_list = []
+
+for value in division:
+    division_list.append((value.id, value.division))
+
 
 
 
@@ -75,11 +82,12 @@ class ItemFilter(django_filters.FilterSet):
     # client= ChoiceFilter(field_name='client_name', label="CLIENT", choices=clients_list)
     site = ChoiceFilter(field_name='site', label="SITE", choices=site_list)
     floor = ChoiceFilter(field_name='floor', label="FLOOR", choices=floor_list)
+    division = ChoiceFilter(field_name='division', label="DIVISION", choices=division_list)
 
    
     class Meta:
         model = Item
-        fields = ['item_name','brand_name','remarks','member','site','floor','date_from','date_to']
+        fields = ['item_name','brand_name','remarks','member','site','floor','date_from','date_to', 'division']
 
 
 class ItemBaseFilter(django_filters.FilterSet):
@@ -89,7 +97,8 @@ class ItemBaseFilter(django_filters.FilterSet):
     date_from = DateFilter(field_name='date_added', lookup_expr='date__gte', label="DATE FROM", widget=DateInput(attrs={'type': 'date'}))
     date_to = DateFilter(field_name='date_added', lookup_expr='date__lte', label="DATE TO", widget=DateInput(attrs={'type': 'date'}))
     demand_item = ChoiceFilter(field_name='demand_item', label="DEMAND ITEM", choices=demand_item_list)
+    division = ChoiceFilter(field_name='division', label="DIVISION", choices=division_list)
 
     class Meta:
         model = ItemBase
-        fields = ['site','item_name','brand_name','date_from','date_to','demand_item']
+        fields = ['site','item_name','brand_name','date_from','date_to','demand_item','division']

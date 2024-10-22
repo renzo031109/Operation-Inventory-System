@@ -191,10 +191,12 @@ def new_item(request):
             form_item_uom = request.POST.get('uom')
             form_item_site = request.POST.get('site')
             # form_item_price = request.POST.get('price')
+            form_item_division = request.POST.get('division')
 
             #convert values of foreign key
             uom_value = UOM.objects.get(id=form_item_uom)
             site_value = Site.objects.get(id=form_item_site)
+            division_value = Division.objects.get(id=form_item_division)
 
             #formulate the itemcode
             concat = form_item_name + " | " + form_item_brand + " (" + str(uom_value) +") " + " - " + str(site_value)
@@ -239,7 +241,8 @@ def new_item(request):
                                     # client_name=client,
                                     # department_name=department
                                     site=site_value,
-                                    purpose="NEW ITEM"
+                                    purpose="NEW ITEM",
+                                    division = division_value
 
                                     )
             
@@ -560,7 +563,8 @@ def export_excel_inventory(request):
                 'SITE',
                 'FLOOR',
                 'PURPOSE',
-                'DEMAND'	
+                'DEMAND',
+                'DIVISION'	
                 ]
     row_num = 2
 
@@ -589,6 +593,7 @@ def export_excel_inventory(request):
         # department_name = str(item.department_name)
         site_name = str(item.site)
         floor_name = str(item.floor)
+        division = str(item.division)
         date_added = datetime.strftime(item.date_added,'%m/%d/%Y %H:%M:%S')
 
         worksheet.append([
@@ -602,7 +607,8 @@ def export_excel_inventory(request):
             member_name,
             site_name,
             floor_name,
-            item.purpose
+            item.purpose,
+            division
         ])
     
     workbook.save(response)
@@ -645,7 +651,8 @@ def export_excel_summary(request):
                 # 'TOTAL PRICE',
                 # 'TOTAL BALANCE',
                 'DATE',
-                'DEMAND'
+                'DEMAND',
+                'DIVISION'
                 ]
     row_num = 2
 
@@ -674,6 +681,7 @@ def export_excel_summary(request):
 
         uom = str(item.uom)
         demand_item = str(item.demand_item)
+        division = str(item.division)
         date_added = datetime.strftime(item.date_added,'%m/%d/%Y %H:%M:%S')
 
         worksheet.append([
@@ -685,7 +693,8 @@ def export_excel_summary(request):
             # item.total_price,
             # item.total_value,
             date_added,
-            demand_item
+            demand_item,
+            division
         ])
     
     workbook.save(response)

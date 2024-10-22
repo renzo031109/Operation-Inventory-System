@@ -46,6 +46,7 @@ INVENTORY REPORT
         <th scope="col">{% anchor date_added _("DATE") %}</th>
         <th scope="col">{% anchor critical_value _("CRITICAL VALUE") %}</th>
         <th scope="col">{% anchor demand_item _("DEMAND ITEM") %}</th>
+        <th scope="col">{% anchor division _("DIVISION") %}</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -64,6 +65,11 @@ INVENTORY REPORT
         <td>{{ item.date_added }}</td>
         <td>{{ item.critical_value }}</td>
         <td>{{ item.demand_item }}</td>
+        {% if item.division %}
+          <td>{{ item.division}}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
         <td>
           <center>
               <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete{{ item.id }}"><i class="fa-solid fa-trash"></i></button>

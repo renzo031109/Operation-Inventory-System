@@ -15,7 +15,8 @@ class ItemNewForm(forms.ModelForm):
             'item_code',
             'remarks',
             'critical_value',
-            'demand_item'
+            'demand_item',
+            'division'
             ]
         labels = {
             'site': 'SITE',
@@ -27,7 +28,8 @@ class ItemNewForm(forms.ModelForm):
             'uom':'UOM',
             'remarks' : 'REMARKS',
             'critical_value': 'CRITICAL VALUE',
-            'demand_item': 'DEMAND ITEM'
+            'demand_item': 'DEMAND ITEM',
+            'division': 'DIVISION'
 
         }
         widgets = {
@@ -41,6 +43,7 @@ class ItemNewForm(forms.ModelForm):
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'}),
             'critical_value': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
             'demand_item': forms.Select(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
+            'division': forms.Select(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
         }
 
 

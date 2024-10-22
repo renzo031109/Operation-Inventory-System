@@ -111,6 +111,21 @@ class DemandItems(models.Model):
         super(DemandItems, self).save()
 
 
+class Division(models.Model):
+    division = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return self.division
+    
+    class Meta:
+        ordering = ["division"]
+
+    #Save data to upper case
+    def save(self):
+        self.division= self.division.upper()
+        super(Division, self).save()
+
+
 class ItemBase(models.Model):
     item_name = models.CharField(max_length=200, null=True)
     brand_name = models.CharField(max_length=200, null=True)
@@ -125,6 +140,7 @@ class ItemBase(models.Model):
     critical_value = models.IntegerField(null=True, blank=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     demand_item = models.ForeignKey(DemandItems, on_delete=models.CASCADE)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ["item_name"]
@@ -184,6 +200,7 @@ class Item(models.Model):
     site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True)
     purpose = models.TextField(null=True, blank=True)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE, null=True)
     
     class Meta:
         ordering = ["-date_added"]
