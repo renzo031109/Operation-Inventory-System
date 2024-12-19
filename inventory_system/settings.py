@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'inventory.apps.InventoryConfig',
     'dashboard.apps.DashboardConfig',
+    'clinic.apps.ClinicConfig',
     'user.apps.UserConfig',
 
     "crispy_forms",
