@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+CLINIC
+{% endblock title %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <h1>Form Submitted Successfully</h1>
+    <p>Thank you for submitting your clinical record.</p>
+    <p><a href="{% url 'clinic_record_step1' %}">Submit another record</a></p>
+
+</div>
+
+</div>
+
+{% endblock content %}

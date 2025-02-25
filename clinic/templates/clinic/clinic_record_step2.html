@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+CLINIC
+{% endblock title %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
+    
+      <div class="container mt-3">
+    
+        <h1>Clinical Record - Step 2</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col">
+                    {{ form.illness.label_tag }}
+                    {{ form.illness }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form.amr.label_tag }}
+                    {{ form.amr }}
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col">   
+                    {{ form.medicine.label_tag }}
+                    {{ form.medicine }}
+                </div>
+            </div>
+
+            <button type="submit">Submit</button>
+            <button type="button" onclick="window.history.back();">Back</button>
+        </form>
+        
+    
+      </div>
+    </div>
+    </div>
+
+{% endblock content %}
