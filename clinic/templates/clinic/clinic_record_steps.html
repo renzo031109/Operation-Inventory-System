@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+CLINIC
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
+        <div class="container mt-3">
+            <h1 class="text-center"> <i class="fa-solid fa-house-medical-flag"></i> Clinical Record Log</h1>
+           
+            <form class="form-horizontal" method="post">
+                {% csrf_token %}
+                {{ formset.management_form|crispy }}
+
+                {% for form in formset %}
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            {{ form.location|as_crispy_field }}
+                        </div>
+                    </div>
+                    <p></p>
+                    <div class="form-group row">         
+                        <div class="col-sm-4">
+                            {{ form.employee_id|as_crispy_field }}
+                        </div>
+
+                        <div class="col-sm-4">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+
+                        <div class="col-sm-4">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    <p></p>
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                            {{ form.gender|as_crispy_field }}
+                        </div>
+
+                        <div class="col-sm-4">
+                            {{ form.company|as_crispy_field }}
+                        </div>
+
+                        <div class="col-sm-4">
+                            {{ form.department|as_crispy_field }}
+                        </div>
+                    </div>
+                    <p></p>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            {{ form.illness|as_crispy_field }}
+                        </div>
+                    </div>
+                    <p></p>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            {{ form.amr|as_crispy_field }}
+                        </div>
+                    </div>
+                    <p></p>
+                   
+                {% endfor %}
+
+
+                <div class="row">
+                    <table class="table table-bordered table-hover mt-4">
+                        <thead>
+          
+                          <tr>
+                      
+                              <th scope="col" style="width:70%">&nbsp MEDICINE</th>
+                              <th scope="col" style="width:30%">&nbsp QUANTITY</th>
+                              <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody class="form-row spacer">
+                            {% for mform in formset %}
+                            <tr> 
+                            
+                              <td>{{ mform.medicine|as_crispy_field  }}</td>
+                              <td>{{ mform.quantity|as_crispy_field }}</td>
+                              
+                              <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
+                              
+                            </tr>
+                            
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>    
+
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-truck-medical"></i>
+                        <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true"></span>
+                        Next
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<!-- Call the script for the formset -->
+{% include 'clinic/form_script.html' %}
+
+
+{% endblock content %}

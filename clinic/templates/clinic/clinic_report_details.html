@@ -1,0 +1,67 @@
+{% extends 'base.html'  %}
+
+{% block title %}
+CLINIC LOG
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% load sorting_tags %}
+
+{% block content %}
+
+
+
+
+<div class="card card-body mt-3 mb-5 shadow fade show" style="width: 100%;">
+<table class="table table-bordered table-hover table-striped">
+  <center><h3 class="ititles">CLINIC DETAILED REPORT</h3></center>
+    <thead class="table-primary"> 
+      <tr>
+        
+        <th scope="col">{% anchor location _("LOCATION") %}</th>
+        <th scope="col">{% anchor employee_id _("EMPLOYEE ID") %}</th>
+        <th scope="col">{% anchor last_name _("LAST NAME") %}</th>
+        <th scope="col">{% anchor first_name _("FIRST NAME") %}</th>
+        <th scope="col">{% anchor gender _("GENDER") %}</th>
+        <th scope="col">{% anchor company _("COMPANY") %}</th>
+        <th scope="col">{% anchor department _("DEPARTMENT") %}</th>
+        <th scope="col">{% anchor illness _("ILLNESS") %}</th>
+        <th scope="col">{% anchor amr _("AMR") %}</th>
+        <th scope="col">{% anchor medicine _("MEDICINE") %}</th>
+        <th scope="col">{% anchor quantity _("QUANTITY") %}</th>
+        <th scope="col">{% anchor quantity _("DATE") %}</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% autosort clinics as sorted_items %}
+      
+      {% for clinic in sorted_items %}
+     
+      <tr>
+        <td>{{ clinic.location }}</td>
+        <td>{{ clinic.employee_id }}</td>
+        <td>{{ clinic.last_name }}</td>
+        <td>{{ clinic.first_name }}</td>
+        <td>{{ clinic.gender }}</td>
+        <td>{{ clinic.company }}</td>
+        <td>{{ clinic.department }}</td>
+        <td>{{ clinic.illness }}</td>
+        <td>{{ clinic.amr }}</td>
+        <td>{{ clinic.medicine }}</td>
+        <td>{{ clinic.quantity }}</td>
+        <td>{{ clinic.date_added }}</td>
+
+        
+      {% endfor %}
+
+       
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+{% endblock content %}

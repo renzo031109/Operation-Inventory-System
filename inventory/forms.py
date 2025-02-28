@@ -124,15 +124,19 @@ class ItemGetForm(forms.ModelForm):
         #     }),
         'member': forms.Select(attrs={
             'class':'form-control',    
+            'required':True
             }),
         'site': forms.Select(attrs={
-            'class':'form-control',    
+            'class':'form-control', 
+            'required':True   
             }),
         'floor': forms.Select(attrs={
             'class':'form-control', 
+            'required':True
             }),
         'purpose': forms.TextInput(attrs={
             'class':'form-control',
+            'required':True
             }),
         }
         

@@ -28,10 +28,9 @@
           </li>
 
 
-
           {% if request.user|has_group:"Clinic" %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'clinic_record_step1' %}" ><i class="fa-solid fa-circle-minus"></i> CLINIC</a>
+              <a class="nav-link" href="{% url 'clinic_record_steps' %}" ><i class="fa-solid fa-magnifying-glass-plus"></i> CLINIC</a>
             </li>
           {% endif %}
 
@@ -42,6 +41,9 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'summary_item' %}">INVENTORY REPORT</a></li>
               <li><a class="dropdown-item" href="{% url 'inventory_item' %}">DETAILED REPORT</a></li>
+              {% if request.user|has_group:"Clinic" %}
+              <li><a class="dropdown-item" href="{% url 'clinic_report_details' %}">CLINIC DETAILED REPORT</a></li>
+              {% endif %}
             </ul>
           </li>
           
