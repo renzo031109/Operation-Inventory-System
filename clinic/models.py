@@ -121,3 +121,6 @@ class Clinic_Record(models.Model):
     medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(null=True)
     date_added = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.employee_id

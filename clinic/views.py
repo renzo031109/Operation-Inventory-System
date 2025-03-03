@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.serializers.json import DjangoJSONEncoder
 import json
-from .forms import ClinicRecordFormSet
+from .forms import ClinicRecordFormSet, MedicineRecordFormSet
 from .models import Clinic_Record, Medicine
 from django.contrib import messages
 
@@ -22,6 +22,7 @@ def clinic_record_steps(request):
     department_list = []
     illness_list = []
     amr_list = []
+    insufficient_quantity = False
 
     if request.method == 'POST':
         formset = ClinicRecordFormSet(request.POST)
@@ -116,6 +117,57 @@ def clinic_record_steps(request):
 
 
 
+def add_medicine(request):
+
+    # #Initiate a list variable for the input select fields
+    # site_name_list = []
+
+    if request.method == 'POST':
+        formset = MedicineRecordFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                
+                # check if itemcode is selected
+                if form.cleaned_data.get('medicine') and form.cleaned_data.get('quantity'):  
+                    
+                    #get the item name from the form 
+                    add_medicine = form.cleaned_data.get('medicine')
+
+                    #get the item qty from the form
+                    add_qty = form.cleaned_data.get('quantity')
+
+                    
+                    medicine_soh = Medicine.objects.get(medicine=add_medicine)
+
+                    #compute add soh
+                    soh = int(medicine_soh.quantity) + int(add_qty)
+
+                    #get the updated soh after add
+                    medicine_soh.quantity = int(soh)
+                    
+                    #save tables
+                    medicine_soh.save()
+                        
+                
+                else:
+
+                    messages.error(request, "Invalid Input. Form is incomplete.")
+                    return redirect('add_medicine')
+                
+            messages.success(request, "You added stock successfully!")
+                
+            return redirect('clinic_report_details')
+        
+        else:
+            messages.error(request, "Invalid Input!")
+
+    else:
+        formset = MedicineRecordFormSet(queryset=Medicine.objects.none())
+
+    context = {'formset': formset}
+    return render(request, 'clinic/add_medicine.html', context)
+
+
 
 def clinic_report_details(request):
     clinics = Clinic_Record.objects.all()
@@ -152,4 +204,10 @@ def clinic_report_details(request):
         'clinics': clinics,
         }
     return render(request, 'clinic/clinic_report_details.html', context)
+
+
+
+
+
+
 
