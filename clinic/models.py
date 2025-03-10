@@ -54,6 +54,7 @@ class Department(models.Model):
     
     class Meta:
         ordering = ["department"]
+        verbose_name = "Department/Client"
 
     #Save data to upper case
     def save(self):
@@ -69,6 +70,7 @@ class Illness(models.Model):
     
     class Meta:
         ordering = ["illness"]
+        verbose_name = "Chief of Complaint"
 
     #Save data to upper case
     def save(self):
@@ -84,6 +86,7 @@ class AMR(models.Model):
     
     class Meta:
         ordering = ["amr"]
+        verbose_name = "Body System"
 
     #Save data to upper case
     def save(self):
@@ -94,6 +97,24 @@ class AMR(models.Model):
 class Medicine(models.Model):
     medicine = models.CharField(max_length=200)
     quantity = models.IntegerField()
+    clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.medicine
+    
+    class Meta:
+        ordering = ["medicine"]
+
+    #Save data to upper case
+    def save(self):
+        self.medicine = self.medicine.upper()
+        super(Medicine, self).save()
+
+
+#Duplicate to allow dropdown option
+class MedicineNew(models.Model):
+    medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
+    quantity = models.IntegerField(null=True)
 
     def __str__(self):
         return self.medicine
@@ -124,3 +145,13 @@ class Clinic_Record(models.Model):
 
     def __str__(self):
         return self.employee_id
+    
+
+    class Meta:
+        ordering = ["-date_added"]
+
+    #Save data to upper case
+    def save(self):
+        self.last_name = self.last_name.upper()
+        self.first_name = self.first_name.upper()
+        super(Clinic_Record, self).save()

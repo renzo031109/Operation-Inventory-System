@@ -1,5 +1,5 @@
 from django import forms
-from .models import Clinic_Record, Medicine
+from .models import Clinic_Record, MedicineNew, Medicine
 from django.forms import modelformset_factory
 
 
@@ -40,8 +40,8 @@ class ClinicRecordFormSteps(forms.ModelForm):
         widgets={
             'location': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'employee_id': forms.TextInput(attrs={'class':'ClinicRecordFormSteps','autocomplete': 'off', 'required': True}),
-            'first_name': forms.TextInput(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'last_name': forms.TextInput(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
+            'first_name': forms.TextInput(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),       
             'gender': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'company': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'department': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
@@ -61,7 +61,7 @@ ClinicRecordFormSet = modelformset_factory(Clinic_Record, form=ClinicRecordFormS
 
 class AddMedicineForm(forms.ModelForm):
     class Meta:
-        model = Medicine
+        model = MedicineNew
         fields = [
             'medicine',
             'quantity'
@@ -82,4 +82,31 @@ class AddMedicineForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
-MedicineRecordFormSet = modelformset_factory(Medicine, form=AddMedicineForm, extra=1)
+MedicineRecordFormSet = modelformset_factory(MedicineNew, form=AddMedicineForm, extra=1)
+
+
+
+class NewMedicineForm(forms.ModelForm):
+    class Meta:
+        model = Medicine
+        fields = [
+            'medicine',
+            'quantity'
+            ]
+        
+        
+        labels = {
+            'medicine': '',
+            'quantity': ''
+        }
+
+        widgets={
+            'medicine': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off'}),
+            'quantity': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off'}),
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+NewMedicineRecordFormSet = modelformset_factory(Medicine, form=NewMedicineForm, extra=1)

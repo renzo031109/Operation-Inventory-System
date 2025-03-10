@@ -10,8 +10,30 @@ CLINIC LOG
 
 {% block content %}
 
+<div class="row mx-1">
+  <div class="col">
+
+<!-- filter option -->
+
+    <button class="btn btn-primary mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+    <a href="{% url 'clinic_export_excel_summary' %}"><button class="btn btn-primary mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+
+      <div class="card card-body mt-3" id="filter-slide">
+          <h5>FILTER BY:</h5>
+          <form action="" method="get" class="form-control-sm">
+
+              {{ clinic_record_filter.form | crispy }}
+
+              <button class="btn btn-primary" type="submit">SEARCH</button>
+
+          </form>
+      </div>
+  </div>
+  <div class="col"></div>
+</div>
 
 
+<div class="row mx-1">
 
 <div class="card card-body mt-3 mb-5 shadow fade show" style="width: 100%;">
 <table class="table table-bordered table-hover table-striped">
@@ -52,14 +74,15 @@ CLINIC LOG
         <td>{{ clinic.amr }}</td>
         <td>{{ clinic.medicine }}</td>
         <td>{{ clinic.quantity }}</td>
-        <td>{{ clinic.date_added }}</td>
-
+        <td>{{ clinic.date_added }}</td>  
+      </tr>
         
       {% endfor %}
 
        
     </tbody>
   </table>
+</div>
 </div>
 </div>
 

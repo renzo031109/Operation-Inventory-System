@@ -29,10 +29,18 @@
 
 
           {% if request.user|has_group:"Clinic" %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'clinic_record_steps' %}" ><i class="fa-solid fa-magnifying-glass-plus"></i> CLINIC</a>
-            </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-table"></i>  CLINIC
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'clinic_record_steps' %}">CLINIC LOG</a></li>
+              <li><a class="dropdown-item" href="{% url 'add_medicine' %}">ADD MEDICINE</a></li>
+              <li><a class="dropdown-item" href="{% url 'new_medicine' %}">NEW MEDICINE</a></li>
+            </ul>
+          </li>
           {% endif %}
+
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -43,6 +51,8 @@
               <li><a class="dropdown-item" href="{% url 'inventory_item' %}">DETAILED REPORT</a></li>
               {% if request.user|has_group:"Clinic" %}
               <li><a class="dropdown-item" href="{% url 'clinic_report_details' %}">CLINIC DETAILED REPORT</a></li>
+              <li><a class="dropdown-item" href="{% url 'medicine_report_details' %}">MEDICINE INVENTORY REPORT</a></li>
+              
               {% endif %}
             </ul>
           </li>
