@@ -12,8 +12,12 @@
       <!-- allow to access this navbar menu if user is admin user  -->
       {% if request.user.is_staff and request.user.is_superuser %}
 
+
+      
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+      {% if request.user|has_group:"Operation" or request.user|has_group:"admin" %}
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="{% url 'dashboard' %}"><i class="fa-solid fa-house"></i> HOME</a>
           </li>
@@ -26,9 +30,10 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'get_item' %}" ><i class="fa-solid fa-circle-minus"></i> RELEASED ITEM</a>
           </li>
+      {% endif %}
 
 
-          {% if request.user|has_group:"Clinic" %}
+      {% if request.user|has_group:"Clinic" or request.user|has_group:"admin" %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa-solid fa-table"></i>  CLINIC
@@ -39,43 +44,51 @@
               <li><a class="dropdown-item" href="{% url 'new_medicine' %}">NEW MEDICINE</a></li>
             </ul>
           </li>
-          {% endif %}
+      {% endif %}
 
-
+          
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa-solid fa-table"></i>  REPORT
             </a>
             <ul class="dropdown-menu">
+
+      {% if request.user|has_group:"Operation" or request.user|has_group:"admin" %}
               <li><a class="dropdown-item" href="{% url 'summary_item' %}">INVENTORY REPORT</a></li>
               <li><a class="dropdown-item" href="{% url 'inventory_item' %}">DETAILED REPORT</a></li>
-              {% if request.user|has_group:"Clinic" %}
-              <li><a class="dropdown-item" href="{% url 'clinic_report_details' %}">CLINIC DETAILED REPORT</a></li>
-              <li><a class="dropdown-item" href="{% url 'medicine_report_details' %}">MEDICINE INVENTORY REPORT</a></li>
+          
+      {% endif %}
+
+      {% if request.user|has_group:"Clinic" or request.user|has_group:"admin" %}
+
+                <li><a class="dropdown-item" href="{% url 'clinic_report_details' %}">CLINIC DETAILED REPORT</a></li>
+                <li><a class="dropdown-item" href="{% url 'medicine_report_details' %}">MEDICINE INVENTORY REPORT</a></li>
               
-              {% endif %}
+      {% endif %}
             </ul>
           </li>
           
+      <!-- {% if request.user|has_group:"admin" %} -->
           <li class="nav-item">
             <a class="nav-link" href="/admin" ><i class="fa-solid fa-gear"></i> SETTING</a>
           </li>
 
         </ul>
 
-        {% endif %}
+      <!-- {% endif %} -->
     
    
         <ul class="navbar-nav ml-auto">
        
-        {% if user.is_authenticated %}
+      {% if request.user|has_group:"Clinic" or request.user|has_group:"admin" %}
+      
         <h5 id="hi-name"><i class="fa-solid fa-circle-user"></i> Hi {{ user.username }}!</h5>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'user-logout' %}" ><i class="fa-solid fa-right-from-bracket"></i> Logout</a> 
           </li>
           
 
-        {% else %}
+      {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'user-login' %}" ><i class="fa-solid fa-right-to-bracket"></i> Login</a>
           </li>
@@ -83,7 +96,8 @@
             <a class="nav-link" href="{% url 'user-register' %}" >Register</a>
           </li> -->
         </ul>
-        {% endif %}
+      {% endif %}
+      {% endif %}
         
       </div>
     </div>

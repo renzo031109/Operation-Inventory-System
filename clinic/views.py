@@ -6,6 +6,7 @@ from .models import Clinic_Record, Medicine
 from django.contrib import messages
 from .filters import ClinicRecordFilter, MedicineFilter
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 #for export excel imports
 from openpyxl.styles.borders import Border, Side, BORDER_THIN
@@ -15,10 +16,12 @@ from openpyxl.styles import *
 from urllib.parse import quote
 
 
+@login_required
 def success(request):
     return render(request, 'clinic/success.html')
 
 
+@login_required
 def clinic_record_steps(request):
 
     location_list = []
@@ -129,7 +132,7 @@ def clinic_record_steps(request):
     return render(request, 'clinic/clinic_record_steps.html', context)
 
 
-
+@login_required
 def add_medicine(request):
 
     # #Initiate a list variable for the input select fields
@@ -181,7 +184,7 @@ def add_medicine(request):
     return render(request, 'clinic/add_medicine.html', context)
 
 
-
+@login_required
 def new_medicine(request):
 
     if request.method == 'POST':
@@ -221,7 +224,7 @@ def new_medicine(request):
     return render(request, 'clinic/new_medicine.html', context)
 
 
-
+@login_required
 def clinic_report_details(request):
     clinic = Clinic_Record.objects.all()
 
@@ -250,7 +253,7 @@ def clinic_report_details(request):
     return render(request, 'clinic/clinic_report_details.html', context)
 
 
-
+@login_required
 def medicine_report_details(request):
     medicine = Medicine.objects.all()
 
@@ -279,7 +282,7 @@ def medicine_report_details(request):
     return render(request, 'clinic/medicine_report.html', context)
 
 
-
+@login_required
 def clinic_export_excel_summary(request):
 
     #Export excel function
@@ -377,7 +380,7 @@ def clinic_export_excel_summary(request):
     return response
 
 
-
+@login_required
 def medicine_export_excel_summary(request):
 
     #Export excel function
