@@ -21,9 +21,9 @@ def success(request):
     return render(request, 'clinic/success.html')
 
 
+
 @login_required
 def clinic_record_steps(request):
-
     location_list = []
     employee_id_list = []
     last_name_list = []
@@ -87,7 +87,6 @@ def clinic_record_steps(request):
                         department = department_list[0]
                         illness = illness_list[0]
                         amr = amr_list[0]
-
 
                         #Convert qty value to negative for get
                         qtyToNegative = (get_quantity ) * -1

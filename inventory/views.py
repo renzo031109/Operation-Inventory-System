@@ -627,7 +627,6 @@ def export_excel_summary(request):
                      top=Side(style='thin'), 
                      bottom=Side(style='thin'))
 
-
     # Declare Workbook
     workbook = Workbook()
     worksheet = workbook.active

@@ -24,15 +24,15 @@ class ClinicRecordFormSteps(forms.ModelForm):
         
         
         labels = {
-            'location': 'LOCATION',
+            'location': 'CLINIC LOCATION',
             'employee_id': 'EMPLOYEE ID',
             'last_name': 'LAST NAME',
             'first_name': 'FIRST NAME',
             'gender': 'GENDER',
             'company': 'COMPANY',
-            'department': 'DEPARTMENT',
-            'illness': 'ILLNESS',
-            'amr': 'AMR',
+            'department': 'CLIENT/DEPARTMENT',
+            'illness': 'CHIEF COMPLAINT OR ILLNESS OR CONSULTATION MEDICAL DIAGNOSIS',
+            'amr': 'AMR LIST OF DISEASES',
             'medicine': '',
             'quantity': ''
         }
