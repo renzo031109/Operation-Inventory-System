@@ -10,11 +10,11 @@ HOME
 <div class="container">
 
 <div class="dasboard-title mt-5 pb-3">
-    <h3>STORAGE DASHBOARD  </h3>
+    <h3>MY DASHBOARD  </h3>
 </div>
 <div class="container text-center">
     <div class="row">
-      <div class="col-4">
+      <div class="col-3">
         <div class="card text-bg-primary mb-3 shadow fade show">
             <h5 class="card-header">TOTAL ITEM COUNT</h5>
             <div class="card-body">
@@ -22,19 +22,28 @@ HOME
             </div>
           </div>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <div class="card text-bg-danger shadow fade show">
-            <h5 class="card-header ">TOTAL ITEM WITH CRITICAL STOCKS</h5>
+            <h5 class="card-header ">TOTAL CRITICAL STOCKS</h5>
             <div class="card-body">
                 <h1 class="card-title">{{ critical_count }}</h1>
             </div>
           </div>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <div class="card text-bg-warning mb-3 shadow fade show ">
             <h5 class="card-header">TRANSACTION TODAY</h5>
             <div class="card-body">
                 <h1 class="card-title">{{ transaction_count }}</h1>
+            </div>
+          </div>
+      </div>
+
+      <div class="col-3">
+        <div class="card text-bg-info mb-3 shadow fade show ">
+            <h5 class="card-header">CLINIC LOGS TODAY</h5>
+            <div class="card-body">
+                <h1 class="card-title">{{ clinic_log_count }}</h1>
             </div>
           </div>
       </div>

@@ -16,9 +16,14 @@ CLINIC
 
 <div class="container">
     <div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
+
+        <div class="btn btn-warning">
+            <h1 class="text-center">SHORE360 CLINIC MEDICINE LOGS</h1>
+        </div>
+
         <div class="container mt-3">
-            <h1 class="text-center"> <i class="fa-solid fa-house-medical-flag"></i> SHORE360 CLINIC MEDICINE LOGS</h1>
-           
+            
+           <p></p>
             <form class="form-horizontal" method="post">
                 {% csrf_token %}
                 {{ formset.management_form|crispy }}
@@ -69,7 +74,7 @@ CLINIC
                             {{ form.amr|as_crispy_field }}
                         </div>
                     </div>
-                    <p></p>
+            
                    
                 {% endfor %}
 
@@ -114,6 +119,7 @@ CLINIC
 
         </div>
     </div>
+
 </div>
 
 

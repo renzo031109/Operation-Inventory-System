@@ -94,10 +94,30 @@ class AMR(models.Model):
         super(AMR, self).save()
 
 
+
+class Demand(models.Model):
+    demand = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return self.demand
+    
+    class Meta:
+        ordering = ["demand"]
+
+    #Save data to upper case
+    def save(self):
+        self.demand= self.demand.upper()
+        super(Demand, self).save()
+
+
+
 class Medicine(models.Model):
     medicine = models.CharField(max_length=200)
     quantity = models.IntegerField()
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
+    critical = models.IntegerField(null=True, default=False)
+    demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return self.medicine
@@ -111,10 +131,12 @@ class Medicine(models.Model):
         super(Medicine, self).save()
 
 
+
 #Duplicate to allow dropdown option
 class MedicineNew(models.Model):
     medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(null=True)
+
 
     def __str__(self):
         return self.medicine

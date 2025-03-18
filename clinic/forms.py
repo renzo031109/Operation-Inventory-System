@@ -91,16 +91,22 @@ class NewMedicineForm(forms.ModelForm):
         model = Medicine
         fields = [
             'medicine',
-            'quantity'
+            'quantity',
+            # 'demand_item',
+            # 'critical'
             ]
         
         
         labels = {
-            'medicine': '',
-            'quantity': ''
+            'demand_item':'',
+            'critical': '',
+            # 'medicine': '',
+            # 'quantity': ''
         }
 
         widgets={
+            # 'location': forms.Select(attrs={'class':'NewMedicineForm', 'autocomplete': 'off'}),
+            # 'employee_id': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off'}),
             'medicine': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off'}),
             'quantity': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off'}),
         }

@@ -195,6 +195,8 @@ def new_medicine(request):
                 # Get values from the form
                 new_medicine = form.cleaned_data.get('medicine')  # Use cleaned_data for safety
                 new_medicine_qty = form.cleaned_data.get('quantity')
+                # demand = form.cleaned_data.get('demand_item')
+                # critical= form.cleaned_data.get('critical')
 
                 # Check if value exist in the database
                 if Medicine.objects.filter(medicine__iexact=new_medicine).exists():
