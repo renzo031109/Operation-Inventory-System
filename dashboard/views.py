@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from inventory.models import Item, ItemBase
-from clinic.models import Clinic_Record
+from clinic.models import Clinic_Record, Medicine
 from django.http import HttpResponse
 import datetime
 from django.db.models import Q
@@ -22,6 +22,7 @@ def dashboard_view(request):
     itembase = ItemBase.objects.all()
     item = Item.objects.all()
     clinic = Clinic_Record.objects.all()
+    medicine = Medicine.objects.all()
 
     #Total Item Count
     item_count = itembase.count()
@@ -73,7 +74,8 @@ def dashboard_view(request):
         'none_value': none_value,
         'itembase': itembase,
         'transaction_count': transaction_count,
-        'clinic_log_count': clinic_log_count
+        'clinic_log_count': clinic_log_count,
+        'medicine': medicine
 
     }
 

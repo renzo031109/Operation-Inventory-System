@@ -51,14 +51,19 @@ HOME
     </div>
 </div>
 
+
 <div class="dasboard-title mt-5 pb-3">
     <h3>CRITICAL STOCK ON HAND </h3>
 </div>
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-6">
 
           <div class="card card-body shadow fade show">
+
+            <div class="btn btn-secondary">
+              <h3>OPERATION ITEMS</h3>
+            </div>
 
             <table class="table table-bordered table-hover table-striped">
                   <thead class="table-primary">
@@ -126,12 +131,62 @@ HOME
 
           </div>
 
+          <div class="pb-5">
+            <a href="{% url 'critical_stock_excel_export' %}"><button class="btn btn-success mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+          </div>
+
     </div>
+
+
+    <div class="col-6">
+
+
+      <div class="card card-body shadow fade show">
+
+        <div class="btn btn-secondary">
+          <h3>CLINIC ITEMS</h3>
+        </div>
+        <table class="table table-bordered table-hover table-striped">
+              <thead class="table-primary">
+                <tr>
+                  <th scope="col">MEDICINE</th>
+                  <th scope="col">SOH</th>
+                  <th scope="col">CRITICAL QTY</th>
+                  <th scope="col">DEMAND</th>                
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in medicine %}
+                <tr>
+                  <!-- condition if admin add a critical value -->
+                    {% if item.critical > 0 %}
+
+                      {% if item.quantity <= item.critical %}
+
+                        <td>{{ item.medicine }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.critical }}</td>
+                        <td>{{ item.demand }}</td>
+                      
+                      {% endif %}
+      
+                    {% endif %}
+
+                </tr>
+                {% endfor %}
+          
+              </tbody>
+            </table>
+
+      </div>
+
+
+    </div>
+
+
+
 </div>
 
-<div class="pb-5">
-  <a href="{% url 'critical_stock_excel_export' %}"><button class="btn btn-success mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
-</div>
 
 </div>
 

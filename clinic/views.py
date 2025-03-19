@@ -195,6 +195,8 @@ def new_medicine(request):
                 # Get values from the form
                 new_medicine = form.cleaned_data.get('medicine')  # Use cleaned_data for safety
                 new_medicine_qty = form.cleaned_data.get('quantity')
+                new_demand = form.cleaned_data.get('demand')
+                new_critical = form.cleaned_data.get('critical')
                 # demand = form.cleaned_data.get('demand_item')
                 # critical= form.cleaned_data.get('critical')
 
@@ -206,7 +208,7 @@ def new_medicine(request):
                 # Check if fields are valid
                 if new_medicine and new_medicine_qty:
                     # Create and save the new medicine entry
-                    new_medicine_db = Medicine(medicine=new_medicine, quantity=new_medicine_qty)
+                    new_medicine_db = Medicine(medicine=new_medicine, quantity=new_medicine_qty, demand=new_demand, critical=new_critical)
                     new_medicine_db.save()
                     messages.success(request, "You added stock successfully!")
                 else:
@@ -397,7 +399,7 @@ def medicine_export_excel_summary(request):
     # Declare Workbook
     workbook = Workbook()
     worksheet = workbook.active
-    worksheet.merge_cells('A1:B1')
+    worksheet.merge_cells('A1:D1')
 
     first_cell = worksheet['A1']
     first_cell.value = "MEDICINE LOGS"
@@ -410,7 +412,9 @@ def medicine_export_excel_summary(request):
     # Add headers
     headers =   [
                 'MEDICINE',
-                'QUANTITY',
+                'STOCK ON HAND',
+                'DEMAND',
+                'CRITICAL QTY'
                 ]
     row_num = 2
 
@@ -439,10 +443,14 @@ def medicine_export_excel_summary(request):
 
         medicine = str(item.medicine)
         quantity = str(item.quantity)
+        demand = str(item.demand)
+        critical = str(item.critical)
 
         worksheet.append([
             medicine,
             quantity,
+            demand,
+            critical
         ])
     
     workbook.save(response)

@@ -23,9 +23,11 @@ NEW MEDICINE
           
                           <tr>
                       
-                              <th scope="col" style="width:70%">&nbsp MEDICINE</th>
-                              <th scope="col" style="width:30%">&nbsp QUANTITY</th>
-                              <th scope="col"></th>
+                              <th scope="col" style="width:45%">&nbsp MEDICINE</th>
+                              <th scope="col" style="width:10%">&nbsp QUANTITY</th>
+                              <th scope="col" style="width:25%">&nbsp DEMAND</th>
+                              <th scope="col" style="width:15%">&nbsp CRITICAL QTY</th>
+                              <th scope="col" style="width:5%"></th>
                           </tr>
                         </thead>
                         <tbody class="form-row spacer">
@@ -34,6 +36,8 @@ NEW MEDICINE
                             
                               <td>{{ form.medicine|as_crispy_field  }}</td>
                               <td>{{ form.quantity|as_crispy_field }}</td>
+                              <td>{{ form.demand|as_crispy_field }}</td>
+                              <td>{{ form.critical|as_crispy_field }}</td>
 
                               <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
                               

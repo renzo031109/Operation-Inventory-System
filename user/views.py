@@ -30,7 +30,7 @@ class CustomLoginView(LoginView):
         if user.groups.filter(name='CLINIC').exists():
             return '/clinic/'  # URL for Clinic landing page
         elif user.groups.filter(name='OPERATION').exists():
-            return '/inventory/'  # URL for Operation landing page
+            return '/'  # URL for Operation landing page
         else:
             return '/dashboard/'  # Default landing page if no groups matched
 

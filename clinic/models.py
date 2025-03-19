@@ -115,7 +115,7 @@ class Medicine(models.Model):
     medicine = models.CharField(max_length=200)
     quantity = models.IntegerField()
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
-    critical = models.IntegerField(null=True, default=False)
+    critical = models.IntegerField(null=True)
     demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)
 
 

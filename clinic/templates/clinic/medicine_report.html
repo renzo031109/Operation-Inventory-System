@@ -41,15 +41,19 @@
                 <thead class="table-primary">
                     <tr>
                         <th scope="col">{% anchor medicine _("MEDICINE") %}</th>
-                        <th scope="col">{% anchor quantity _("QUANTITY") %}</th>
+                        <th scope="col">{% anchor quantity _("STOCK ON HAND") %}</th>
+                        <th scope="col">{% anchor demand _("DEMAND") %}</th>
+                        <th scope="col">{% anchor critical _("CRITICAL QTY") %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% autosort medicines as sorted_items %}
                     {% for item in sorted_items %}
                         <tr>
-                            <td style="width: 70%">{{ item.medicine }}</td>
-                            <td style="width: 30%">{{ item.quantity }}</td>
+                            <td style="width: 40%">{{ item.medicine }}</td>
+                            <td style="width: 15%">{{ item.quantity }}</td>
+                            <td style="width: 30%">{{ item.demand }}</td>
+                            <td style="width: 15%">{{ item.critical }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
