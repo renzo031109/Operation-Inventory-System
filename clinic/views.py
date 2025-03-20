@@ -33,6 +33,8 @@ def clinic_record_steps(request):
     department_list = []
     illness_list = []
     amr_list = []
+    medical_given_list = []
+    note_list = []
     insufficient_quantity = False
 
     if request.method == 'POST':
@@ -54,6 +56,8 @@ def clinic_record_steps(request):
                     get_department = form.cleaned_data.get('department')
                     get_illness = form.cleaned_data.get('illness')
                     get_amr = form.cleaned_data.get('amr')
+                    get_medical_given = form.cleaned_data.get('medical_given')
+                    get_note = form.cleaned_data.get('note') 
                     get_medicine = form.cleaned_data.get('medicine')
                     get_quantity = form.cleaned_data.get('quantity')
 
@@ -76,6 +80,8 @@ def clinic_record_steps(request):
                         department_list.append(get_department)
                         illness_list.append(get_illness)
                         amr_list.append(get_amr)
+                        medical_given_list.append(get_medical_given)
+                        note_list.append(get_note)
 
                         #assign the first form value
                         location = location_list[0]
@@ -87,6 +93,8 @@ def clinic_record_steps(request):
                         department = department_list[0]
                         illness = illness_list[0]
                         amr = amr_list[0]
+                        medical_given = medical_given_list[0]
+                        note = note_list[0]
 
                         #Convert qty value to negative for get
                         qtyToNegative = (get_quantity ) * -1
@@ -104,6 +112,9 @@ def clinic_record_steps(request):
                         clinicForm.department = department
                         clinicForm.illness = illness
                         clinicForm.amr = amr 
+                        clinicForm.medical_given = medical_given
+                        clinicForm.note = note
+
                         clinicForm.medicine = get_medicine
                         clinicForm.quantity = qtyToNegative
 

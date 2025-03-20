@@ -150,6 +150,23 @@ class MedicineNew(models.Model):
         super(Medicine, self).save()
 
 
+
+class MedicalServiceGiven(models.Model):
+    medical_given = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.medical_given
+    
+    class Meta:
+        ordering = ["medical_given"]
+
+    #Save data to upper case
+    def save(self):
+        self.medical_given= self.medical_given.upper()
+        super(MedicalServiceGiven, self).save()
+
+
+
 class Clinic_Record(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     employee_id = models.CharField(max_length=50, null=True, blank=True)
@@ -164,6 +181,9 @@ class Clinic_Record(models.Model):
     medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(null=True)
     date_added = models.DateTimeField(auto_now_add=True, null=True)
+    medical_given = models.ForeignKey(MedicalServiceGiven, on_delete=models.SET_NULL, null=True, blank=True)
+    note = models.TextField(null=True, blank=False)
+
 
     def __str__(self):
         return self.employee_id

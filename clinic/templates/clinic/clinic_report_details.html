@@ -52,7 +52,10 @@ CLINIC LOG
         <th scope="col">{% anchor amr _("AMR") %}</th>
         <th scope="col">{% anchor medicine _("MEDICINE") %}</th>
         <th scope="col">{% anchor quantity _("QUANTITY") %}</th>
-        <th scope="col">{% anchor quantity _("DATE") %}</th>
+        <th scope="col">{% anchor date_added _("DATE") %}</th>
+
+        <th scope="col">{% anchor medical_given _("MEDICAL GIVEN") %}</th>
+        <th scope="col">{% anchor note _("NOTE") %}</th>
 
       </tr>
     </thead>
@@ -75,6 +78,9 @@ CLINIC LOG
         <td>{{ clinic.medicine }}</td>
         <td>{{ clinic.quantity }}</td>
         <td>{{ clinic.date_added }}</td>  
+
+        <td>{{ clinic.medical_given }}</td>
+        <td>{{ clinic.note }}</td>  
       </tr>
         
       {% endfor %}

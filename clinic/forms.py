@@ -1,5 +1,5 @@
 from django import forms
-from .models import Clinic_Record, MedicineNew, Medicine
+from .models import Clinic_Record, MedicineNew, Medicine, MedicalServiceGiven
 from django.forms import modelformset_factory
 
 
@@ -18,8 +18,11 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'department',
             'illness',
             'amr',
+            'medical_given',
+            'note',
             'medicine',
-            'quantity'
+            'quantity',
+            
             ]
         
         
@@ -33,6 +36,8 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'department': 'CLIENT/DEPARTMENT',
             'illness': 'CHIEF COMPLAINT OR ILLNESS OR CONSULTATION MEDICAL DIAGNOSIS',
             'amr': 'AMR LIST OF DISEASES',
+            'medical_given': 'MEDICAL SERVICE GIVEN (NURSE TO FILL UP)',
+            'note':'NOTE',
             'medicine': '',
             'quantity': ''
         }
@@ -47,6 +52,8 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'department': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'illness': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'amr': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
+            'medical_given': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
+            'note': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
             'medicine': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
             'quantity': forms.TextInput(attrs={'class':'ClinicRecordFormSteps','autocomplete': 'off', 'required': True }),
         }

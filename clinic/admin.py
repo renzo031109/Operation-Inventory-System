@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Location, Gender, Company, Department, Illness, AMR, Medicine, Clinic_Record, Demand
+from .models import Location, Gender, Company, Department, Illness, AMR, Medicine, Clinic_Record, Demand, MedicalServiceGiven
 
 admin.site.site_header = "S360 CLINIC"
 
@@ -11,6 +11,7 @@ admin.site.register(Department)
 admin.site.register(Illness)
 admin.site.register(AMR)
 admin.site.register(Demand)
+admin.site.register(MedicalServiceGiven)
 
 
 
@@ -23,11 +24,11 @@ class ClinicRecordAdmin(admin.ModelAdmin):
     list_filter = ('gender', 'company', 'department')  # Optional: Filters for better usability
 
 
-# Customize Medicine admin
-@admin.register(Medicine)
-class MedicineAdmin(admin.ModelAdmin):
-    list_display = ('medicine', 'quantity')  # Columns displayed in the admin list view
-    search_fields = ('medicine',)  # Enables search functionality for the 'medicine' field
+# # Customize Medicine admin
+# @admin.register(Medicine)
+# class MedicineAdmin(admin.ModelAdmin):
+#     list_display = ('medicine', 'quantity')  # Columns displayed in the admin list view
+#     search_fields = ('medicine',)  # Enables search functionality for the 'medicine' field
 
 
 

@@ -33,6 +33,10 @@ CLINIC
                         <div class="col-sm-4">
                             {{ form.location|as_crispy_field }}
                         </div>
+
+                        <div class="col-sm-4">
+                            {{ form.medical_given|as_crispy_field }}
+                        </div>
                     </div>
                     <p></p>
                     <div class="form-group row">         
@@ -64,14 +68,17 @@ CLINIC
                     </div>
                     <p></p>
                     <div class="form-group row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                             {{ form.illness|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-6">
+                            {{ form.amr|as_crispy_field }}
                         </div>
                     </div>
                     <p></p>
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            {{ form.amr|as_crispy_field }}
+                            {{ form.note|as_crispy_field }}
                         </div>
                     </div>
             
@@ -88,6 +95,7 @@ CLINIC
                               <th scope="col" style="width:70%">&nbsp MEDICINE</th>
                               <th scope="col" style="width:30%">&nbsp QUANTITY</th>
                               <th scope="col"></th>
+                              
                           </tr>
                         </thead>
                         <tbody class="form-row spacer">

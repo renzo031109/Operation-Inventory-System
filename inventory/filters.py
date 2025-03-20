@@ -10,6 +10,7 @@ remarks_select = (
     ('BEGINNING','BEGINNING')
 )
 
+
 # #department list
 # departments = Department.objects.all()
 # departments_list = []
@@ -25,21 +26,26 @@ site_list = []
 for value in site:
     site_list.append((value.id, value.site))
 
-# #client list
-# clients = Client.objects.all()
-# clients_list = []
 
-# #get client values
-# for value in clients:
-#     clients_list.append((value.id, value.client))
+# #Floor List
+# floor = Floor.objects.all()
+# floor_list = []
+
+# for value in floor:
+#     floor_list.append((value.id, value.floor))
 
 
-#Floor List
+# Unique Floor List based only on the 'floor' field
 floor = Floor.objects.all()
 floor_list = []
+unique_floors = set()  # Track only unique floor names
 
 for value in floor:
-    floor_list.append((value.id, value.floor))
+    normalized_floor = value.floor.strip().upper()  # Normalize by stripping spaces and converting to lowercase
+    if normalized_floor not in unique_floors:
+        unique_floors.add(normalized_floor)  # Add the normalized floor name to the set
+        floor_list.append((value.id, value.floor))  # Append the original data to the list
+
 
 
 #Member List
