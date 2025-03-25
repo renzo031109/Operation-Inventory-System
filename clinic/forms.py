@@ -35,7 +35,7 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'company': 'COMPANY',
             'department': 'CLIENT/DEPARTMENT',
             'illness': 'CHIEF COMPLAINT OR ILLNESS OR CONSULTATION MEDICAL DIAGNOSIS',
-            'amr': 'AMR LIST OF DISEASES',
+            'amr': 'BODY SYSTEM AFFECTED',
             'medical_given': 'MEDICAL SERVICE GIVEN (NURSE TO FILL UP)',
             'note':'NOTE',
             'medicine': '',
@@ -53,7 +53,7 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'illness': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'amr': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'medical_given': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
-            'note': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
+            'note': forms.Textarea(attrs={'rows': 2, 'cols': 50, 'required': False }),
             'medicine': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
             'quantity': forms.TextInput(attrs={'class':'ClinicRecordFormSteps','autocomplete': 'off', 'required': True }),
         }

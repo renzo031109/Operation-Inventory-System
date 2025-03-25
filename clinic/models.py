@@ -86,7 +86,7 @@ class AMR(models.Model):
     
     class Meta:
         ordering = ["amr"]
-        verbose_name = "Body System"
+        verbose_name = "Body System Affected"
 
     #Save data to upper case
     def save(self):
@@ -182,7 +182,7 @@ class Clinic_Record(models.Model):
     quantity = models.IntegerField(null=True)
     date_added = models.DateTimeField(auto_now_add=True, null=True)
     medical_given = models.ForeignKey(MedicalServiceGiven, on_delete=models.SET_NULL, null=True, blank=True)
-    note = models.TextField(null=True, blank=False)
+    note = models.TextField(null=True, blank=True)
 
 
     def __str__(self):
