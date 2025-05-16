@@ -13,11 +13,11 @@
     <!-- Filter Section -->
     <div class="row mx-1">
         <div class="col">
-            <button class="btn btn-success mt-3" id="filterBtn">
+            <button class="btn btn-primary mt-3" id="filterBtn">
                 <i class="fa-solid fa-magnifying-glass"></i> SEARCH
             </button>
             <a href="{% url 'medicine_export_excel_summary' %}">
-                <button class="btn btn-success mt-3 ms-2">
+                <button class="btn btn-primary mt-3 ms-2">
                     <i class="fa-solid fa-file-export"></i> EXPORT XLS
                 </button>
             </a>
@@ -42,6 +42,7 @@
                     <tr>
                         <th scope="col">{% anchor medicine _("MEDICINE") %}</th>
                         <th scope="col">{% anchor quantity _("STOCK ON HAND") %}</th>
+                        <th scope="col">{% anchor consumed _("TOTAL CONSUMED") %}</th>
                         <th scope="col">{% anchor demand _("DEMAND") %}</th>
                         <th scope="col">{% anchor critical _("CRITICAL QTY") %}</th>
                     </tr>
@@ -52,7 +53,8 @@
                         <tr>
                             <td style="width: 40%">{{ item.medicine }}</td>
                             <td style="width: 15%">{{ item.quantity }}</td>
-                            <td style="width: 30%">{{ item.demand }}</td>
+                            <td style="width: 15%">{{ item.consumed }}</td>
+                            <td style="width: 15%">{{ item.demand }}</td>
                             <td style="width: 15%">{{ item.critical }}</td>
                         </tr>
                     {% endfor %}

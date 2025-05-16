@@ -21,127 +21,6 @@ def success(request):
     return render(request, 'clinic/success.html')
 
 
-
-# @login_required
-# def clinic_record_steps(request):
-#     location_list = []
-#     employee_id_list = []
-#     last_name_list = []
-#     first_name_list = []
-#     gender_list = []
-#     company_list = []
-#     department_list = []
-#     illness_list = []
-#     amr_list = []
-#     medical_given_list = []
-#     note_list = []
-#     insufficient_quantity = False
-
-#     if request.method == 'POST':
-#         formset = ClinicRecordFormSet(request.POST)
-
-#         if formset.is_valid():
-
-#             for form in formset:
-
-#                 if form.cleaned_data.get('medicine') and form.cleaned_data.get('quantity'):
-
-#                     #get the input of user
-#                     get_location = form.cleaned_data.get('location')
-#                     get_employee_id = form.cleaned_data.get('employee_id')
-#                     get_last_name = form.cleaned_data.get('last_name')
-#                     get_first_name = form.cleaned_data.get('first_name')
-#                     get_gender = form.cleaned_data.get('gender')
-#                     get_company = form.cleaned_data.get('company')
-#                     get_department = form.cleaned_data.get('department')
-#                     get_illness = form.cleaned_data.get('illness')
-#                     get_amr = form.cleaned_data.get('amr')
-#                     get_medical_given = form.cleaned_data.get('medical_given')
-#                     get_note = form.cleaned_data.get('note') 
-#                     get_medicine = form.cleaned_data.get('medicine')
-#                     get_quantity = form.cleaned_data.get('quantity')
-
-#                     #connect the Medicine DB
-#                     medicine_db = Medicine.objects.get(medicine=get_medicine)
-                    
-#                     if medicine_db.quantity > get_quantity:
-                        
-#                         #deduct the quantity of the medicine
-#                         new_quantity = medicine_db.quantity - get_quantity
-#                         medicine_db.quantity = new_quantity
-
-#                         #add the input to a list
-#                         location_list.append(get_location)
-#                         employee_id_list.append(get_employee_id)
-#                         last_name_list.append(get_last_name)
-#                         first_name_list.append(get_first_name)
-#                         gender_list.append(get_gender)
-#                         company_list.append(get_company)
-#                         department_list.append(get_department)
-#                         illness_list.append(get_illness)
-#                         amr_list.append(get_amr)
-#                         medical_given_list.append(get_medical_given)
-#                         note_list.append(get_note)
-
-#                         #assign the first form value
-#                         location = location_list[0]
-#                         employee_id =  employee_id_list[0]
-#                         last_name = last_name_list[0]
-#                         first_name = first_name_list[0]
-#                         gender = gender_list[0]
-#                         company = company_list[0]
-#                         department = department_list[0]
-#                         illness = illness_list[0]
-#                         amr = amr_list[0]
-#                         medical_given = medical_given_list[0]
-#                         note = note_list[0]
-
-#                         #Convert qty value to negative for get
-#                         qtyToNegative = (get_quantity ) * -1
-
-#                         #hold save
-#                         clinicForm = form.save(commit=False)
-                
-#                         #assign the value to the fields db
-#                         clinicForm.location = location
-#                         clinicForm.employee_id =  employee_id
-#                         clinicForm.last_name = last_name
-#                         clinicForm.first_name = first_name
-#                         clinicForm.gender = gender
-#                         clinicForm.company = company
-#                         clinicForm.department = department
-#                         clinicForm.illness = illness
-#                         clinicForm.amr = amr 
-#                         clinicForm.medical_given = medical_given
-#                         clinicForm.note = note
-
-#                         clinicForm.medicine = get_medicine
-#                         clinicForm.quantity = qtyToNegative
-
-#                         clinicForm.save()
-
-#                         medicine_db.save()
-
-#                     else:
-#                         insufficient_quantity = True          
-#                         messages.error(request, f"Unable to process, insufficient quantity for {get_medicine}")
-
-
-#             if insufficient_quantity:
-#                 return render(request, 'clinic/clinic_record_steps.html', {'formset': formset})
-#             return redirect('success')
-
-#         else:
-            
-#             messages.error(request, "Invalid Input!")
-            
-#     else:
-#         formset = ClinicRecordFormSet(queryset=Clinic_Record.objects.none())
-
-#     context = {'formset': formset}
-#     return render(request, 'clinic/clinic_record_steps.html', context)
-
-
 @login_required
 def clinic_record_steps(request):
     insufficient_quantity = False  # Flag to track if any form fails quantity validation
@@ -226,6 +105,9 @@ def clinic_record_steps(request):
                 # Deduct the quantity
                 get_quantity = form.cleaned_data.get('quantity')
                 medicine_db.quantity -= get_quantity
+
+                    
+                medicine_db.consumed += get_quantity
                 medicine_db.save()
 
                 # Save the form
@@ -449,7 +331,7 @@ def clinic_export_excel_summary(request):
     worksheet.merge_cells('A1:L1')
 
     first_cell = worksheet['A1']
-    first_cell.value = "CLINICAL LOGS"
+    first_cell.value = "SHORE360 CLINICAL LOGS"
     first_cell.font = Font(bold=True)
     first_cell.alignment = Alignment(horizontal="center", vertical="center")
 
@@ -460,7 +342,7 @@ def clinic_export_excel_summary(request):
     headers =   [
                 'LOCATION',	
                 'EMPLOYEE ID',
-                'NAME'
+                'NAME',
                 'GENDER',
                 'COMPANY',
                 'DEPARTMENT/CLIENT',
@@ -512,7 +394,6 @@ def clinic_export_excel_summary(request):
         worksheet.append([
             location,
             employee,
-            gender,
             name,
             gender,
             company,
@@ -544,7 +425,7 @@ def medicine_export_excel_summary(request):
     # Declare Workbook
     workbook = Workbook()
     worksheet = workbook.active
-    worksheet.merge_cells('A1:D1')
+    worksheet.merge_cells('A1:E1')
 
     first_cell = worksheet['A1']
     first_cell.value = "MEDICINE LOGS"
@@ -558,6 +439,7 @@ def medicine_export_excel_summary(request):
     headers =   [
                 'MEDICINE',
                 'STOCK ON HAND',
+                'TOTAL CONSUMED',
                 'DEMAND',
                 'CRITICAL QTY'
                 ]
@@ -588,12 +470,14 @@ def medicine_export_excel_summary(request):
 
         medicine = str(item.medicine)
         quantity = str(item.quantity)
+        consumed = str(item.consumed)
         demand = str(item.demand)
         critical = str(item.critical)
 
         worksheet.append([
             medicine,
             quantity,
+            consumed,
             demand,
             critical
         ])

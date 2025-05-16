@@ -117,6 +117,8 @@ class Medicine(models.Model):
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     critical = models.IntegerField(null=True)
     demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)
+    consumed = models.IntegerField(default=0, null=True)
+
 
 
     def __str__(self):
@@ -159,6 +161,7 @@ class MedicalServiceGiven(models.Model):
     
     class Meta:
         ordering = ["medical_given"]
+        db_table = "clinic_medicalservicegiven"  # Explicitly set table name
 
     #Save data to upper case
     def save(self):
