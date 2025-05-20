@@ -485,6 +485,8 @@ def medicine_export_excel_summary(request):
     workbook.save(response)
     return response
 
+#
+
 
 
 
