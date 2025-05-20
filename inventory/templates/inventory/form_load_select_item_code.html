@@ -1,41 +1,6 @@
 <!-- 
-{% block custom_js %}
-
-<script type="text/javascript">
-
-$("#id_form-0-site").change(function () {
-        const url = $("#add_item_form").attr("data-item_code-url");  // get the url of the `load_cities` view
-        const siteId = $(this).val();  // get the selected country ID from the HTML input
-
-        $.ajax({                       // initialize an AJAX request
-            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
-            data: {
-                'site_id': siteId       // add the country id to the GET parameters
-            },
-            success: function (data) {   // `data` is the return of the `load_cities` view function
-                $("#id_form-0-item_code").html(data);  // replace the contents of the city input with the data that came from the server
-                /*
-
-                let html_data = '<option value="">---------</option>';
-                data.forEach(function (city) {
-                    html_data += `<option value="${city.id}">${city.name}</option>`
-                });
-                console.log(html_data);
-                $("#id_city").html(html_data);
-
-                */
-            }
-        });
-
-    });
-
-</script>
-
-{% endblock %} -->
-
-
-
-
+This will filter the option in dropdown list 
+-->
 
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {

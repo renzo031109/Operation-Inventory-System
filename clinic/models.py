@@ -46,21 +46,6 @@ class Company(models.Model):
         super(Company, self).save()
 
 
-class Department(models.Model):
-    department = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.department
-    
-    class Meta:
-        ordering = ["department"]
-        verbose_name = "Department/Client"
-
-    #Save data to upper case
-    def save(self):
-        self.department= self.department.upper()
-        super(Department, self).save()
-
 
 class Illness(models.Model):
     illness = models.CharField(max_length=200)
@@ -178,7 +163,7 @@ class Clinic_Record(models.Model):
     last_name = models.CharField(max_length=200, null=True, blank=True)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+    department = models.CharField(max_length=200, null=True, blank=True)
     illness = models.ForeignKey(Illness, on_delete=models.CASCADE, null=True, blank=True)
     amr = models.ForeignKey(AMR, on_delete=models.CASCADE, null=True, blank=True)
     medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
@@ -199,4 +184,5 @@ class Clinic_Record(models.Model):
     def save(self):
         self.last_name = self.last_name.upper()
         self.first_name = self.first_name.upper()
+        self.department = self.department.upper()
         super(Clinic_Record, self).save()

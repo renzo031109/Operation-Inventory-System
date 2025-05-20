@@ -1,6 +1,6 @@
 import django_filters
 from django_filters import DateFilter, CharFilter, ChoiceFilter
-from .models import Location, Gender, Company, Department, Illness, AMR, Medicine, Clinic_Record
+from .models import Location, Gender, Company, Illness, AMR, Medicine, Clinic_Record
 from django import forms
 
 
@@ -26,14 +26,6 @@ company_list = []
 
 for value in company:
     company_list.append((value.id, value.company))
-
-
-#Department List
-department = Department.objects.all()
-department_list = []
-
-for value in department:
-    department_list.append((value.id, value.department))
 
 
 #Illness List
@@ -71,7 +63,7 @@ class ClinicRecordFilter(django_filters.FilterSet):
     first_name = CharFilter(field_name='first_name', lookup_expr='icontains', label="FIRSTNAME")
     gender = ChoiceFilter(field_name='gender', label="GENDER", choices=gender_list)
     company = ChoiceFilter(field_name='company', label="COMPANY", choices=company_list)
-    department = ChoiceFilter(field_name='department', label="DEPARTMENT", choices=department_list)
+    department = CharFilter(field_name='department', lookup_expr='icontains', label="CLIENT/DEPARTMENT")
     illness = ChoiceFilter(field_name='illness', label="ILLNESS", choices=illness_list)
     amr = ChoiceFilter(field_name='amr', label="AMR", choices=amr_list)
     medicine = ChoiceFilter(field_name='medicine', label="MEDICINE", choices=medicine_list)
