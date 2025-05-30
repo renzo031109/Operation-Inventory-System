@@ -51,7 +51,7 @@ INVENTORY REPORT
         <!-- <th scope="col" class="text-right">{% anchor price _("PRICE") %}</th>
         <th scope="col" class="text-right">{% anchor total_price _("TOTAL PRICE") %}</th>
         <th scope="col" class="text-right">{% anchor total_value _("TOTAL BALANCE") %}</th> -->
-        <th scope="col">{% anchor date_added _("DATE") %}</th>
+        <!-- <th scope="col">{% anchor date_added _("DATE") %}</th> -->
         <th scope="col">{% anchor critical_value _("CRITICAL VALUE") %}</th>
         <th scope="col">{% anchor demand_item _("DEMAND ITEM") %}</th>
         <th scope="col">{% anchor division _("DIVISION") %}</th>
@@ -70,9 +70,9 @@ INVENTORY REPORT
         <!-- <td class="text-right">{{ item.price }}</td>
         <td class="text-right">{{ item.total_price }}</td>
         <td class="text-right">{{ item.total_value }}</td> -->
-        <td>{{ item.date_added }}</td>
-        <td>{{ item.critical_value }}</td>
-        <td>{{ item.demand_item }}</td>
+        <!-- <td>{{ item.date_added }}</td> -->
+        <td><center>{{ item.critical_value }}</center></td>
+        <td><center>{{ item.demand_item }}</center></td>
         {% if item.division %}
           <td>{{ item.division}}</td>
         {% else %}

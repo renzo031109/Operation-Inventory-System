@@ -9,7 +9,7 @@ This will filter the option in dropdown list
         siteField.addEventListener('change', function() {
             const siteId = siteField.value;
 
-            fetch(`/load_items/${siteId}/`)
+            fetch(`{% url 'inventory_load_item_code' 0 %}`.replace('0', siteId))
                 .then(response => response.json())
                 .then(data => {
                     const itemField = document.getElementById('id_form-0-item_code');
@@ -18,5 +18,4 @@ This will filter the option in dropdown list
         });
     });
 </script>
-
 

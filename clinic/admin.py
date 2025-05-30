@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Location, Gender, Company, Illness, AMR, Medicine, Clinic_Record, Demand, MedicalServiceGiven
+from .models import Location, Gender, Company, Illness, AMR, Medicine, Clinic_Record, Demand, MedicalServiceGiven, MedCode, MedicineNew
 
 admin.site.site_header = "S360 CLINIC"
 
@@ -12,8 +12,8 @@ admin.site.register(AMR)
 admin.site.register(Demand)
 admin.site.register(MedicalServiceGiven)
 admin.site.register(Medicine)
-
-
+admin.site.register(MedCode)
+admin.site.register(MedicineNew)
 
 
 # Customizing the Clinic_Record admin view

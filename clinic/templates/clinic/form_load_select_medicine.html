@@ -1,0 +1,22 @@
+<!-- 
+This will filter the option in dropdown list 
+-->
+
+
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const locationField = document.getElementById('id_form-0-location');
+
+        locationField.addEventListener('change', function() {
+            const locationId = locationField.value;
+
+            fetch(`{% url 'load_medcode_code' 0 %}`.replace('0', locationId))
+                .then(response => response.json())
+                .then(data => {
+                    const medicineField = document.getElementById('id_form-0-medcode');
+                    medicineField.innerHTML = data.medcode.map(med => `<option value="${med.id}">${med.code}</option>`).join('');
+                });
+        });
+    });
+</script>

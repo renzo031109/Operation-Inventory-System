@@ -1,5 +1,5 @@
 from django import forms
-from .models import Clinic_Record, MedicineNew, Medicine, MedicalServiceGiven
+from .models import Clinic_Record, MedicineNew, Medicine, MedicalServiceGiven, MedCode, Location
 from django.forms import modelformset_factory
 
 
@@ -20,7 +20,7 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'amr',
             'medical_given',
             'note',
-            'medicine',
+            'medcode',
             'quantity',
             
             ]
@@ -38,7 +38,7 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'amr': 'BODY SYSTEM AFFECTED',
             'medical_given': 'MEDICAL SERVICE GIVEN (NURSE TO FILL UP)',
             'note':'NOTE',
-            'medicine': '',
+            'medcode': '',
             'quantity': ''
         }
 
@@ -54,12 +54,25 @@ class ClinicRecordFormSteps(forms.ModelForm):
             'amr': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True}),
             'medical_given': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
             'note': forms.Textarea(attrs={'rows': 2, 'cols': 50, 'required': False }),
-            'medicine': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
+            'medcode': forms.Select(attrs={'class':'ClinicRecordFormSteps', 'autocomplete': 'off', 'required': True }),
             'quantity': forms.TextInput(attrs={'class':'ClinicRecordFormSteps','autocomplete': 'off', 'required': True }),
         }
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['medcode'].queryset = MedCode.objects.none()
+
+        print('this location ', self.data)
+
+        #this will populate accdg to user choices on location
+        if 'form-0-location' in self.data:
+            try:
+                location_id = int(self.data.get('form-0-location'))
+                self.fields['medcode'].queryset = MedCode.objects.filter(location_id=location_id).order_by('code')
+            except (ValueError, TypeError):
+                pass #invalid input from the client
+        elif self.instance.pk:
+            self.fields['medcode'].queryset = self.instance.location.medcode_set.order_by('code')
 
 
 ClinicRecordFormSet = modelformset_factory(Clinic_Record, form=ClinicRecordFormSteps, extra=1)
@@ -97,6 +110,7 @@ class NewMedicineForm(forms.ModelForm):
     class Meta:
         model = Medicine
         fields = [
+            'location',
             'medicine',
             'quantity',
             'demand',
@@ -105,6 +119,7 @@ class NewMedicineForm(forms.ModelForm):
         
         
         labels = {
+            'location':'',
             'demand':'',
             'critical': '',
             'medicine': '',
@@ -112,7 +127,7 @@ class NewMedicineForm(forms.ModelForm):
         }
 
         widgets={
-
+            'location': forms.Select(attrs={'class':'NewMedicineForm', 'autocomplete': 'off', 'required': True }),
             'medicine': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off', 'required': True }),
             'quantity': forms.TextInput(attrs={'class':'NewMedicineForm','autocomplete': 'off', 'required': True }),
             'demand': forms.Select(attrs={'class':'NewMedicineForm', 'autocomplete': 'off', 'required': True }),

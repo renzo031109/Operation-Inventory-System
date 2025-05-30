@@ -10,4 +10,8 @@ urlpatterns = [
     path('success/', views.success, name='success'),
     path('add_medicine/', views.add_medicine, name='add_medicine'),
     path('new_medicine/', views.new_medicine, name='new_medicine'),
+
+    path('load_medicines/<int:location_id>/', views.load_medcode_code, name='load_medcode_code'),
+
 ]
+

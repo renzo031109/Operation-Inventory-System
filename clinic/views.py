@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from .forms import ClinicRecordFormSet, MedicineRecordFormSet, NewMedicineRecordFormSet
-from .models import Clinic_Record, Medicine
+from .models import Clinic_Record, Medicine, MedCode, Location
 from django.contrib import messages
 from .filters import ClinicRecordFilter, MedicineFilter
 from django.http import HttpResponse
@@ -14,6 +14,9 @@ from openpyxl import Workbook
 from datetime import datetime
 from openpyxl.styles import *
 from urllib.parse import quote
+
+from django.http import JsonResponse
+import json
 
 
 @login_required
@@ -46,11 +49,13 @@ def clinic_record_steps(request):
             records_to_process = []  # Temporary list to store valid forms and medicines
             for form in formset:
                 if form.cleaned_data.get('medicine') and form.cleaned_data.get('quantity'):
-                    get_medicine = form.cleaned_data.get('medicine')
+                    get_medcode = form.cleaned_data.get('medcode')
                     get_quantity = form.cleaned_data.get('quantity')
 
                     try:
-                        medicine_db = Medicine.objects.get(medicine=get_medicine)
+                        medicine_db = Medicine.objects.get(medcode=get_medcode)
+                        print('MEDICINE DB ===========',medicine_db)
+                
 
                         # Check if quantity is sufficient
                         if medicine_db.quantity >= get_quantity:
@@ -67,9 +72,9 @@ def clinic_record_steps(request):
                             get_amr = form.cleaned_data.get('amr')
                             get_medical_given = form.cleaned_data.get('medical_given')
                             get_note = form.cleaned_data.get('note') 
-                            get_medicine = form.cleaned_data.get('medicine')
-                            get_quantity = form.cleaned_data.get('quantity')
-
+                            # get_medicine = form.cleaned_data.get('medcode')
+                            # get_quantity = form.cleaned_data.get('quantity')
+                    
                             # Collect the valid form and associated medicine but do not deduct yet
                             records_to_process.append((form, medicine_db))
                             location_list.append(get_location)
@@ -87,10 +92,10 @@ def clinic_record_steps(request):
                         else:
                             insufficient_quantity = True
                             validation_errors.append(
-                                f"Insufficient quantity for {get_medicine}. Available: {medicine_db.quantity}."
+                                f"Insufficient quantity for {medicine_db.medicine}. Available: {medicine_db.quantity}."
                             )
                     except Medicine.DoesNotExist:
-                        validation_errors.append(f"Medicine {get_medicine} does not exist.")
+                        validation_errors.append(f"Medicine {medicine_db.medicine} does not exist.")
                 else:
                     validation_errors.append("Medicine and quantity are required for all forms.")
 
@@ -110,11 +115,7 @@ def clinic_record_steps(request):
                 medicine_db.consumed += get_quantity
                 medicine_db.save()
 
-                # Save the form
-                clinic_form = form.save(commit=False)
-                clinic_form.quantity = -get_quantity  # Save negative quantity for record
-
-
+   
                 #assign the first form value
                 location = location_list[0]
                 employee_id =  employee_id_list[0]
@@ -128,6 +129,11 @@ def clinic_record_steps(request):
                 medical_given = medical_given_list[0]
                 note = note_list[0]
 
+                # Save the form
+                clinic_form = form.save(commit=False)
+                clinic_form.medcode = medicine_db
+                clinic_form.medicine = medicine_db.medicine
+                clinic_form.quantity = -get_quantity  # Save negative quantity for record
 
                 #assign the value to the fields db
                 clinic_form.location = location
@@ -141,6 +147,7 @@ def clinic_record_steps(request):
                 clinic_form.amr = amr 
                 clinic_form.medical_given = medical_given
                 clinic_form.note = note
+                
 
 
                 clinic_form.save()
@@ -220,23 +227,42 @@ def new_medicine(request):
             for form in formset:
             
                 # Get values from the form
-                new_medicine = form.cleaned_data.get('medicine')  # Use cleaned_data for safety
+                # Use cleaned_data for safety
+                new_location = form.cleaned_data.get('location')
+                new_medicine = form.cleaned_data.get('medicine')  
                 new_medicine_qty = form.cleaned_data.get('quantity')
                 new_demand = form.cleaned_data.get('demand')
                 new_critical = form.cleaned_data.get('critical')
                 # demand = form.cleaned_data.get('demand_item')
                 # critical= form.cleaned_data.get('critical')
 
+                #convert values of foreign key
+                location_value = Location.objects.get(location=new_location)
+
+                #formulate the itemcode
+                concat = str(location_value) + " | " + new_medicine
+       
                 # Check if value exist in the database
-                if Medicine.objects.filter(medicine__iexact=new_medicine).exists():
+                if MedCode.objects.filter(code__iexact=concat).exists():
                     messages.error(request, f"The value '{new_medicine}' already exists in the database. Please enter a different value.")
                     return render(request, 'clinic/new_medicine.html', {'formset': formset})
+                
+                # Assign code to Medcode table
+                medcode = MedCode(code=concat, location=location_value)
+                medcode.save()
          
                 # Check if fields are valid
                 if new_medicine and new_medicine_qty:
                     # Create and save the new medicine entry
-                    new_medicine_db = Medicine(medicine=new_medicine, quantity=new_medicine_qty, demand=new_demand, critical=new_critical)
+                    new_medicine_db = Medicine(
+                        medcode=medcode,
+                        medicine=new_medicine, 
+                        quantity=new_medicine_qty, 
+                        demand=new_demand, 
+                        critical=new_critical, 
+                        location=new_location)
                     new_medicine_db.save()
+
                     messages.success(request, "You added stock successfully!")
                 else:
                     # Add an error message for incomplete fields
@@ -485,9 +511,17 @@ def medicine_export_excel_summary(request):
     workbook.save(response)
     return response
 
-#
-#
-#test
+
+#This is connected to medcode ajax value / promise
+def load_medcode_code(request, location_id):
+    medcode = list(MedCode.objects.filter(location_id=location_id).values('id', 'code'))
+    return JsonResponse({'medcode': medcode})
+
+
+
+
+
+
 
 
 

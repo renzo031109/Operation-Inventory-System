@@ -13,9 +13,8 @@ urlpatterns = [
     path('export_file_inventory/', views.export_excel_inventory, name='export_file_inventory'),
     path('export_file_summary/', views.export_excel_summary, name='export_file_summary'),
 
-    path('load_floors_and_items/<int:site_id>/', views.get_floors_and_items, name='ajax_load_floor'),
-    path('load_items/<int:site_id>/', views.add_load_item_code, name='ajax_load_item_code'),
-
-    # path('load_item_code_get/', views.load_item_code, name='ajax_load_item_code_get'),
+    #for interactive data fields
+    path('load_floors_and_items/<int:site_id>/', views.get_floors_and_items, name='inventory_load_floor'),
+    path('load_items/<int:site_id>/', views.add_load_item_code, name='inventory_load_item_code'),
 
 ]

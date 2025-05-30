@@ -12,7 +12,7 @@ This will filter the option in dropdown list
             const siteId = siteField.value;
 
             // create a Promise
-            fetch(`/load_floors_and_items/${siteId}/`)
+            fetch(`{% url 'inventory_load_floor' 0 %}`.replace('0', siteId))
                 .then(response => response.json())
                 .then(data => {
                     const floorField = document.getElementById('id_form-0-floor');
@@ -25,3 +25,7 @@ This will filter the option in dropdown list
         });
     });
 </script>
+
+
+
+

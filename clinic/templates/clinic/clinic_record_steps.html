@@ -102,7 +102,7 @@ CLINIC
                             {% for mform in formset %}
                             <tr> 
                             
-                              <td>{{ mform.medicine|as_crispy_field  }}</td>
+                              <td>{{ mform.medcode|as_crispy_field  }}</td>
                               <td>{{ mform.quantity|as_crispy_field }}</td>
                               
                               <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
@@ -135,6 +135,10 @@ CLINIC
 
 <!-- Call the script for the formset -->
 {% include 'clinic/form_script.html' %}
+
+
+<!-- load location data -->
+{% include 'clinic/form_load_select_medicine.html' %}
 
 
 {% endblock content %}

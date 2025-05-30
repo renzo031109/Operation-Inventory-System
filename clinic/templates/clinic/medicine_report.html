@@ -40,6 +40,7 @@
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-primary">
                     <tr>
+                        <th scope="col">{% anchor location _("LOCATION") %}</th>
                         <th scope="col">{% anchor medicine _("MEDICINE") %}</th>
                         <th scope="col">{% anchor quantity _("STOCK ON HAND") %}</th>
                         <th scope="col">{% anchor consumed _("TOTAL CONSUMED") %}</th>
@@ -51,6 +52,7 @@
                     {% autosort medicines as sorted_items %}
                     {% for item in sorted_items %}
                         <tr>
+                            <td style="width: 10%">{{ item.location }}</td>
                             <td style="width: 40%">{{ item.medicine }}</td>
                             <td style="width: 15%">{{ item.quantity }}</td>
                             <td style="width: 15%">{{ item.consumed }}</td>

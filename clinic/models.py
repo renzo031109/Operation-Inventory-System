@@ -96,15 +96,31 @@ class Demand(models.Model):
 
 
 
-class Medicine(models.Model):
+class MedCode(models.Model):
+    code = models.CharField(max_length=200, null=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
+
+    def __str__(self):
+        return self.code
+
+    class Meta:
+        ordering = ["code"]
+    
+    #Save data to upper case
+    def save(self):
+        self.code = self.code.upper()
+        super(MedCode, self).save()
+
+
+class Medicine(models.Model): 
     medicine = models.CharField(max_length=200)
     quantity = models.IntegerField()
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     critical = models.IntegerField(null=True)
-    demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)
     consumed = models.IntegerField(default=0, null=True)
-
-
+    medcode = models.ForeignKey(MedCode, on_delete=models.CASCADE, null=True, blank=True)
+    demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)   
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
 
     def __str__(self):
         return self.medicine
@@ -113,28 +129,28 @@ class Medicine(models.Model):
         ordering = ["medicine"]
 
     #Save data to upper case
-    def save(self):
+    def save(self, *args, **kwargs):
         self.medicine = self.medicine.upper()
-        super(Medicine, self).save()
+        super(Medicine, self).save(*args, **kwargs)
 
 
 
-#Duplicate to allow dropdown option
+#Duplicate table to allow dropdown option
 class MedicineNew(models.Model):
-    medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
+    medcode = models.CharField(max_length=200)
     quantity = models.IntegerField(null=True)
-
-
+    medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
+    
     def __str__(self):
-        return self.medicine
+        return self.medcode
     
     class Meta:
         ordering = ["medicine"]
 
     #Save data to upper case
     def save(self):
-        self.medicine = self.medicine.upper()
-        super(Medicine, self).save()
+        self.medcode = self.medcode.upper()
+        super(MedicineNew, self).save()
 
 
 
@@ -166,7 +182,8 @@ class Clinic_Record(models.Model):
     department = models.CharField(max_length=200, null=True, blank=True)
     illness = models.ForeignKey(Illness, on_delete=models.CASCADE, null=True, blank=True)
     amr = models.ForeignKey(AMR, on_delete=models.CASCADE, null=True, blank=True)
-    medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
+    medcode = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
+    medicine = models.CharField(max_length=200, null=True, blank=True)
     quantity = models.IntegerField(null=True)
     date_added = models.DateTimeField(auto_now_add=True, null=True)
     medical_given = models.ForeignKey(MedicalServiceGiven, on_delete=models.SET_NULL, null=True, blank=True)
