@@ -10,29 +10,38 @@ ADD MEDICINE
 <div class="container">
     <div class="card card-body mt-5 mb-5 pb-4 shadow fade show">
         <div class="container mt-3">
-            <h1 class="text-center"> ADD MEDICINE QUANTITY</h1>
+            <h1 class="text-center mb-5"> ADD MEDICINE QUANTITY</h1>
            
             <form class="form-horizontal" method="post">
                 {% csrf_token %}
                 {{ formset.management_form|crispy }}
 
+                        {% for form in formset %}
 
                 <div class="row">
-                    <table class="table table-bordered table-hover mt-4">
+                    <div class="col-sm-4">
+                            {{ form.location|as_crispy_field }}
+                    </div>
+                    <div class="col-sm-8"></div>           
+                </div>
+
+                <div class="row">
+                    <table class="table table-bordered table-hover mt-1">
                         <thead>
           
                           <tr>
-                      
+    
                               <th scope="col" style="width:70%">&nbsp MEDICINE</th>
-                              <th scope="col" style="width:30%">&nbsp QUANTITY</th>
-                              <th scope="col"></th>
+                              <th scope="col" style="width:20%">&nbsp QUANTITY</th>
+                              <th scope="col" style="width:10%"></th>
                           </tr>
                         </thead>
                         <tbody class="form-row spacer">
-                            {% for form in formset %}
+                            
                             <tr> 
                             
-                              <td>{{ form.medicine|as_crispy_field  }}</td>
+
+                              <td>{{ form.medcode|as_crispy_field  }}</td>
                               <td>{{ form.quantity|as_crispy_field }}</td>
                               
                               <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
@@ -64,6 +73,10 @@ ADD MEDICINE
 
 <!-- Call the script for the formset -->
 {% include 'clinic/form_script.html' %}
+
+
+<!-- load location data -->
+{% include 'clinic/form_load_select_medicine.html' %}
 
 
 {% endblock content %}

@@ -95,35 +95,46 @@ class Demand(models.Model):
         super(Demand, self).save()
 
 
-
+# This is for code reference + details
 class MedCode(models.Model):
     code = models.CharField(max_length=200, null=True)
+    medicine = models.CharField(max_length=200, null=True)
+    quantity = models.IntegerField(null=True)
+    clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
+    critical = models.IntegerField(null=True)
+    consumed = models.IntegerField(default=0, null=True)
+    demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)   
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
+
 
     def __str__(self):
         return self.code
 
     class Meta:
         ordering = ["code"]
+        verbose_name = "Medicine List"
     
     #Save data to upper case
-    def save(self):
+    def save(self, *args, **kwargs):
         self.code = self.code.upper()
-        super(MedCode, self).save()
+        self.medicine = self.medicine.upper()
+        super(MedCode, self).save(*args, **kwargs)
 
 
+# This is the base Medicine Table
 class Medicine(models.Model): 
     medicine = models.CharField(max_length=200)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(null=True)
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     critical = models.IntegerField(null=True)
     consumed = models.IntegerField(default=0, null=True)
-    medcode = models.ForeignKey(MedCode, on_delete=models.CASCADE, null=True, blank=True)
-    demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)   
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
+    medcode = models.ForeignKey(MedCode, on_delete=models.SET_NULL, null=True, blank=True, related_name="medicines")
+    demand = models.ForeignKey(Demand, on_delete=models.SET_NULL, null=True, blank=True)   
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True) 
+
 
     def __str__(self):
-        return self.medicine
+        return str(self.medcode)
     
     class Meta:
         ordering = ["medicine"]
@@ -135,22 +146,25 @@ class Medicine(models.Model):
 
 
 
-#Duplicate table to allow dropdown option
-class MedicineNew(models.Model):
-    medcode = models.CharField(max_length=200)
+class MedicineMovement(models.Model):
+    code = models.CharField(max_length=200, null=True)
+    medicine = models.CharField(max_length=200, null=True)
     quantity = models.IntegerField(null=True)
-    medicine = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
-    
-    def __str__(self):
-        return self.medcode
-    
-    class Meta:
-        ordering = ["medicine"]
+    clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
+    note = models.TextField(null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
 
+    def __str__(self):
+        return self.code
+
+    class Meta:
+        ordering = ["-clinic_date_added"]
+    
     #Save data to upper case
-    def save(self):
-        self.medcode = self.medcode.upper()
-        super(MedicineNew, self).save()
+    def save(self, *args, **kwargs):
+        self.medicine = self.medicine.upper()
+        super(MedicineMovement, self).save(*args, **kwargs)
+
 
 
 
@@ -182,7 +196,7 @@ class Clinic_Record(models.Model):
     department = models.CharField(max_length=200, null=True, blank=True)
     illness = models.ForeignKey(Illness, on_delete=models.CASCADE, null=True, blank=True)
     amr = models.ForeignKey(AMR, on_delete=models.CASCADE, null=True, blank=True)
-    medcode = models.ForeignKey(Medicine, on_delete=models.SET_NULL, null=True)
+    medcode = models.ForeignKey(MedCode, on_delete=models.SET_NULL, null=True)
     medicine = models.CharField(max_length=200, null=True, blank=True)
     quantity = models.IntegerField(null=True)
     date_added = models.DateTimeField(auto_now_add=True, null=True)

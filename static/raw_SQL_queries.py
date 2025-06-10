@@ -66,49 +66,66 @@ with connection.cursor() as cursor:
     """)
 
 from django.db import connection
+
 with connection.cursor() as cursor:
     # Create MedCode Table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS clinic_medcode (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             code VARCHAR(200) NULL,
-            location_id INTEGER NULL,
+            medicine VARCHAR(200) NULL,
+            quantity INTEGER NULL,
+            clinic_date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,
+            critical INTEGER NULL,
+            consumed INTEGER DEFAULT 0 NULL,
+            demand_id INTEGER NULL,
+            location_id INTEGER NULL, 
+            FOREIGN KEY (demand_id) REFERENCES clinic_demand(id),
             FOREIGN KEY (location_id) REFERENCES clinic_location(id)
         );
     """)
 
+
+#********************************************************************* modified medicine
 from django.db import connection
 with connection.cursor() as cursor:
-    # Create Medicine Table
+    # Create New clinic_medicine Table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS clinic_medicine (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            medcode_id INTEGER NULL,
-            medicine VARCHAR(200) NOT NULL,
-            quantity INTEGER NOT NULL,
+            medicine VARCHAR(200) NULL,
+            quantity INTEGER NULL DEFAULT 0,
             clinic_date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,
             critical INTEGER NULL,
-            demand_id INTEGER NULL,
             consumed INTEGER DEFAULT 0 NULL,
+            medcode_id INTEGER NULL,
+            demand_id INTEGER NULL,
             location_id INTEGER NULL,
-            FOREIGN KEY (medcode_id) REFERENCES clinic_medcode(id),
-            FOREIGN KEY (demand_id) REFERENCES clinic_demand(id)
+            FOREIGN KEY (medcode_id) REFERENCES clinic_medcode(id) ON DELETE SET NULL,
+            FOREIGN KEY (demand_id) REFERENCES clinic_demand(id) ON DELETE SET NULL,
+            FOREIGN KEY (location_id) REFERENCES clinic_location(id) ON DELETE SET NULL
+        );
+    """)
+#*********************************************************************************
+
+
+
+from django.db import connection
+with connection.cursor() as cursor:
+    # Create MedicineMovement Table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS clinic_medicinemovement (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code VARCHAR(200) NULL,
+            medicine VARCHAR(200) NULL,
+            quantity INTEGER NULL,
+            clinic_date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,
+            note TEXT NULL,
+            location_id INTEGER NULL,
             FOREIGN KEY (location_id) REFERENCES clinic_location(id)
         );
     """)
 
-from django.db import connection
-with connection.cursor() as cursor:
-    # Create MedicineNew Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS clinic_medicinenew (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            medcode VARCHAR(200) NOT NULL,
-            quantity INTEGER NULL,
-            medicine_id INTEGER NULL,
-            FOREIGN KEY (medicine_id) REFERENCES clinic_medicine(id)
-        );
-    """)
 
 
 from django.db import connection
@@ -120,6 +137,8 @@ with connection.cursor() as cursor:
             medical_given VARCHAR(100) NOT NULL
         );
     """)
+
+
 
 from django.db import connection
 with connection.cursor() as cursor:
@@ -184,27 +203,27 @@ with connection.cursor() as cursor:
     cursor.execute("""
         CREATE TABLE clinic_clinic_record (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            location_id INTEGER,
-            employee_id VARCHAR(50),
-            date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            first_name VARCHAR(200),
-            last_name VARCHAR(200),
-            gender_id INTEGER,
-            company_id INTEGER,
-            department VARCHAR(200),
-            illness_id INTEGER,
-            amr_id INTEGER,
-            medcode_id INTEGER,
-            medicine VARCHAR(200),
-            quantity INTEGER,
-            medical_given_id INTEGER,
-            note TEXT,
+            location_id INTEGER NULL,
+            employee_id VARCHAR(50) NULL,
+            date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,
+            first_name VARCHAR(200) NULL,
+            last_name VARCHAR(200) NULL,
+            gender_id INTEGER NULL,
+            company_id INTEGER NULL,
+            department VARCHAR(200) NULL,
+            illness_id INTEGER NULL,
+            amr_id INTEGER NULL,
+            medcode_id INTEGER NULL,
+            medicine VARCHAR(200) NULL,
+            quantity INTEGER NULL,
+            medical_given_id INTEGER NULL,
+            note TEXT NULL,
             FOREIGN KEY (location_id) REFERENCES clinic_location(id),
             FOREIGN KEY (gender_id) REFERENCES clinic_gender(id),
             FOREIGN KEY (company_id) REFERENCES clinic_company(id),
+            FOREIGN KEY (medcode_id) REFERENCES clinic_medicine(id),
             FOREIGN KEY (illness_id) REFERENCES clinic_illness(id),
             FOREIGN KEY (amr_id) REFERENCES clinic_amr(id),
-            FOREIGN KEY (medcode_id) REFERENCES clinic_medicine(id),
             FOREIGN KEY (medical_given_id) REFERENCES clinic_medicalservicegiven(id)
         );
     """)
@@ -254,6 +273,32 @@ with connection.cursor() as cursor:
 # Print the list of tables
 for table in tables:
     print(table[0])  # Each 'table' is a tuple, so we use [0] to access the table name
+
+
+
+
+#check fields
+from django.db import connection
+
+with connection.cursor() as cursor:
+    cursor.execute("PRAGMA table_info(clinic_medcode);")  # Check table structure
+    columns = cursor.fetchall()
+
+for column in columns:
+    print(column)  # Displays field name, type, etc.
+
+
+
+#drop table
+from django.db import connection
+
+with connection.cursor() as cursor:
+    cursor.execute("DROP TABLE IF EXISTS clinic_medicinemovement;")  # Safely drops the table
+    connection.commit()
+
+print("Table clinic_medcode dropped successfully!")
+
+
 
 
 

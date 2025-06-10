@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from .forms import ClinicRecordFormSet, MedicineRecordFormSet, NewMedicineRecordFormSet
-from .models import Clinic_Record, Medicine, MedCode, Location
+from .models import Clinic_Record, Medicine, MedCode, Location, MedicineMovement
 from django.contrib import messages
 from .filters import ClinicRecordFilter, MedicineFilter
 from django.http import HttpResponse
@@ -48,15 +48,14 @@ def clinic_record_steps(request):
         if formset.is_valid():
             records_to_process = []  # Temporary list to store valid forms and medicines
             for form in formset:
-                if form.cleaned_data.get('medicine') and form.cleaned_data.get('quantity'):
+                if form.cleaned_data.get('medcode') and form.cleaned_data.get('quantity'):
                     get_medcode = form.cleaned_data.get('medcode')
                     get_quantity = form.cleaned_data.get('quantity')
 
                     try:
-                        medicine_db = Medicine.objects.get(medcode=get_medcode)
-                        print('MEDICINE DB ===========',medicine_db)
+                        #code table
+                        medicine_db = MedCode.objects.get(code=get_medcode)
                 
-
                         # Check if quantity is sufficient
                         if medicine_db.quantity >= get_quantity:
 
@@ -115,7 +114,6 @@ def clinic_record_steps(request):
                 medicine_db.consumed += get_quantity
                 medicine_db.save()
 
-   
                 #assign the first form value
                 location = location_list[0]
                 employee_id =  employee_id_list[0]
@@ -147,11 +145,21 @@ def clinic_record_steps(request):
                 clinic_form.amr = amr 
                 clinic_form.medical_given = medical_given
                 clinic_form.note = note
-                
-
 
                 clinic_form.save()
 
+
+                #medicine movement logs
+                medicine_movement = MedicineMovement(
+                            code = medicine_db.code,
+                            medicine = medicine_db.medicine,
+                            quantity = -get_quantity,
+                            note = "RELEASED",
+                            location=location,
+                            )
+                medicine_movement.save()
+ 
+                
             # Redirect to success page
             return redirect('success')
 
@@ -168,8 +176,7 @@ def clinic_record_steps(request):
 @login_required
 def add_medicine(request):
 
-    # #Initiate a list variable for the input select fields
-    # site_name_list = []
+    location_list = []
 
     if request.method == 'POST':
         formset = MedicineRecordFormSet(request.POST)
@@ -177,16 +184,22 @@ def add_medicine(request):
             for form in formset:
                 
                 # check if itemcode is selected
-                if form.cleaned_data.get('medicine') and form.cleaned_data.get('quantity'):  
+                if form.cleaned_data.get('medcode') and form.cleaned_data.get('quantity'):  
                     
+
+                    #get the item qty from the form
+                    add_location = form.cleaned_data.get('location')
+
+                    #get the 1st input location to copy to next rows
+                    location_list.append(add_location)
+
                     #get the item name from the form 
-                    add_medicine = form.cleaned_data.get('medicine')
+                    add_medicine = form.cleaned_data.get('medcode')
 
                     #get the item qty from the form
                     add_qty = form.cleaned_data.get('quantity')
-
-                    
-                    medicine_soh = Medicine.objects.get(medicine=add_medicine)
+             
+                    medicine_soh = MedCode.objects.get(code=add_medicine)
 
                     #compute add soh
                     soh = int(medicine_soh.quantity) + int(add_qty)
@@ -196,8 +209,19 @@ def add_medicine(request):
                     
                     #save tables
                     medicine_soh.save()
-                        
-                
+
+                    location = location_list[0]
+
+                    #medicine movement logs
+                    medicine_movement = MedicineMovement(
+                            code = medicine_soh.code,
+                            medicine = medicine_soh.medicine,
+                            quantity = +add_qty,
+                            note = "ADD",
+                            location = location)
+                    
+                    medicine_movement.save()
+
                 else:
 
                     messages.error(request, "Invalid Input. Form is incomplete.")
@@ -211,7 +235,7 @@ def add_medicine(request):
             messages.error(request, "Invalid Input!")
 
     else:
-        formset = MedicineRecordFormSet(queryset=Medicine.objects.none())
+        formset = MedicineRecordFormSet(queryset=MedCode.objects.none())
 
     context = {'formset': formset}
     return render(request, 'clinic/add_medicine.html', context)
@@ -233,8 +257,6 @@ def new_medicine(request):
                 new_medicine_qty = form.cleaned_data.get('quantity')
                 new_demand = form.cleaned_data.get('demand')
                 new_critical = form.cleaned_data.get('critical')
-                # demand = form.cleaned_data.get('demand_item')
-                # critical= form.cleaned_data.get('critical')
 
                 #convert values of foreign key
                 location_value = Location.objects.get(location=new_location)
@@ -248,7 +270,14 @@ def new_medicine(request):
                     return render(request, 'clinic/new_medicine.html', {'formset': formset})
                 
                 # Assign code to Medcode table
-                medcode = MedCode(code=concat, location=location_value)
+                medcode = MedCode(
+                    code=concat, 
+                    location=location_value,
+                    medicine=str(new_medicine), 
+                    quantity=new_medicine_qty, 
+                    demand=new_demand, 
+                    critical=new_critical,
+                    )
                 medcode.save()
          
                 # Check if fields are valid
@@ -256,12 +285,22 @@ def new_medicine(request):
                     # Create and save the new medicine entry
                     new_medicine_db = Medicine(
                         medcode=medcode,
-                        medicine=new_medicine, 
+                        medicine=str(new_medicine), 
                         quantity=new_medicine_qty, 
                         demand=new_demand, 
                         critical=new_critical, 
                         location=new_location)
                     new_medicine_db.save()
+
+
+                    #medicine movement logs
+                    medicine_movement = MedicineMovement(
+                            code = concat,
+                            medicine = str(new_medicine),
+                            quantity = +new_medicine_qty,
+                            note = "BEGINNING",
+                            location = new_location)
+                    medicine_movement.save()
 
                     messages.success(request, "You added stock successfully!")
                 else:
@@ -309,9 +348,45 @@ def clinic_report_details(request):
     return render(request, 'clinic/clinic_report_details.html', context)
 
 
+
+
+@login_required
+def medicine_movement_report(request):
+    
+    medicine = MedicineMovement.objects.all()
+
+    # medicine_record_filter = MedicineFilter(request.GET, queryset=medicine)
+    # medicines = medicine_record_filter.qs
+    # item_count = medicines.count()
+
+    # #Prompt a message on the qty of the listed report
+    # if item_count > 0 :
+    #     messages.info(request, f"Found '{item_count}' item(s) in the database")
+    # else:
+    #     messages.info(request, f"Item not Found in the database ")
+
+
+    # #This will send the variable to filter views
+    # global filter_medicine_record_val
+    # def filter_medicine_record_val():
+    #     return medicines
+
+
+    context = {
+        # 'item_count': item_count,
+        'medicines': medicine,
+        # 'clinic_record_filter': medicine_record_filter
+        }
+    
+    return render(request, 'clinic/medicine_movement_report.html', context)
+
+
+
+
 @login_required
 def medicine_report_details(request):
-    medicine = Medicine.objects.all()
+    
+    medicine = MedCode.objects.all()
 
     medicine_record_filter = MedicineFilter(request.GET, queryset=medicine)
     medicines = medicine_record_filter.qs
@@ -336,6 +411,7 @@ def medicine_report_details(request):
         'clinic_record_filter': medicine_record_filter
         }
     return render(request, 'clinic/medicine_report.html', context)
+
 
 
 @login_required
@@ -487,7 +563,7 @@ def medicine_export_excel_summary(request):
         medicines = filter_medicine_record_val()
         print("With filter value")
     else:
-        medicines = Medicine.objects.all()
+        medicines = MedCode.objects.all()
         print("filter no value")
 
     for item in medicines:
@@ -512,10 +588,12 @@ def medicine_export_excel_summary(request):
     return response
 
 
+
 #This is connected to medcode ajax value / promise
 def load_medcode_code(request, location_id):
     medcode = list(MedCode.objects.filter(location_id=location_id).values('id', 'code'))
     return JsonResponse({'medcode': medcode})
+
 
 
 

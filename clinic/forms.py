@@ -1,5 +1,5 @@
 from django import forms
-from .models import Clinic_Record, MedicineNew, Medicine, MedicalServiceGiven, MedCode, Location
+from .models import Clinic_Record, Medicine, MedCode
 from django.forms import modelformset_factory
 
 
@@ -81,28 +81,46 @@ ClinicRecordFormSet = modelformset_factory(Clinic_Record, form=ClinicRecordFormS
 
 class AddMedicineForm(forms.ModelForm):
     class Meta:
-        model = MedicineNew
+        model = Medicine
         fields = [
-            'medicine',
+            'location',
+            'medcode',
             'quantity'
             ]
         
         
         labels = {
-            'medicine': '',
+            'location':'',
+            'medcode': '',
             'quantity': ''
         }
 
         widgets={
-            'medicine': forms.Select(attrs={'class':'AddMedicineForm', 'autocomplete': 'off', 'required': True }),
+            'location': forms.Select(attrs={'class':'NewMedicineForm', 'autocomplete': 'off', 'required': False }),
+            'medcode': forms.Select(attrs={'class':'AddMedicineForm', 'autocomplete': 'off', 'required': True }),
             'quantity': forms.TextInput(attrs={'class':'AddMedicineForm','autocomplete': 'off', 'required': True }),
         }
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['medcode'].queryset = MedCode.objects.none()
+        self.fields['location'].empty_label = "SELECT LOCATION:"
+
+        print('this location ', self.data)
+
+        #this will populate accdg to user choices on location
+        if 'form-0-location' in self.data:
+            try:
+                location_id = int(self.data.get('form-0-location'))
+                self.fields['medcode'].queryset = MedCode.objects.filter(location_id=location_id).order_by('code')
+            except (ValueError, TypeError):
+                pass #invalid input from the client
+        elif self.instance.pk:
+            self.fields['medcode'].queryset = self.instance.location.medcode_set.order_by('code')
 
 
-MedicineRecordFormSet = modelformset_factory(MedicineNew, form=AddMedicineForm, extra=1)
+MedicineRecordFormSet = modelformset_factory(Medicine, form=AddMedicineForm, extra=1)
+
 
 
 
