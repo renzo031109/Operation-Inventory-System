@@ -1,4 +1,8 @@
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+from .middleware import get_current_user
+
 
 
 class Location(models.Model):
@@ -103,8 +107,10 @@ class MedCode(models.Model):
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     critical = models.IntegerField(null=True)
     consumed = models.IntegerField(default=0, null=True)
+    note = models.TextField(null=True, blank=True)
+    user = models.CharField(max_length=200, null=True)
     demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)   
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True) 
 
 
     def __str__(self):
@@ -112,7 +118,7 @@ class MedCode(models.Model):
 
     class Meta:
         ordering = ["code"]
-        verbose_name = "Medicine List"
+        verbose_name = "Medicine"
     
     #Save data to upper case
     def save(self, *args, **kwargs):
@@ -130,7 +136,7 @@ class Medicine(models.Model):
     consumed = models.IntegerField(default=0, null=True)
     medcode = models.ForeignKey(MedCode, on_delete=models.SET_NULL, null=True, blank=True, related_name="medicines")
     demand = models.ForeignKey(Demand, on_delete=models.SET_NULL, null=True, blank=True)   
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True) 
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True) 
 
 
     def __str__(self):
@@ -152,7 +158,9 @@ class MedicineMovement(models.Model):
     quantity = models.IntegerField(null=True)
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     note = models.TextField(null=True, blank=True)
+    user = models.CharField(max_length=200, null=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
+
 
     def __str__(self):
         return self.code
@@ -217,3 +225,20 @@ class Clinic_Record(models.Model):
         self.first_name = self.first_name.upper()
         self.department = self.department.upper()
         super(Clinic_Record, self).save()
+
+
+
+
+#This will log the row deleted in Admin panel
+@receiver(pre_delete, sender=MedCode)
+def log_medicine_deletion(sender, instance, **kwargs):
+    current_user = get_current_user()  # Get the current user from thread-local storage
+    MedicineMovement.objects.create(
+        code=instance.code,
+        medicine=instance.medicine,
+        quantity=instance.quantity,
+        note="DELETED",
+        user=current_user.username if current_user else "Unknown",  # Use the current user
+        location=instance.location
+    )
+

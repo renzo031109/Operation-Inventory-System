@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    CLINIC LOG
+    MEDICINE MOVEMENT
 {% endblock title %}
 
 {% load crispy_forms_tags %}
@@ -16,7 +16,7 @@
             <button class="btn btn-primary mt-3" id="filterBtn">
                 <i class="fa-solid fa-magnifying-glass"></i> SEARCH
             </button>
-            <a href="{% url 'medicine_export_excel_summary' %}">
+            <a href="{% url 'medicine_export_excel_movement' %}">
                 <button class="btn btn-primary mt-3 ms-2">
                     <i class="fa-solid fa-file-export"></i> EXPORT XLS
                 </button>
@@ -25,7 +25,7 @@
             <div class="card card-body mt-3" id="filter-slide">
                 <h5>FILTER BY:</h5>
                 <form action="" method="get" class="form-control-sm">
-                    {{ clinic_record_filter.form | crispy }}
+                    {{ medicine_movement_filter.form | crispy }}
                     <button class="btn btn-primary" type="submit">SEARCH</button>
                 </form>
             </div>
@@ -43,8 +43,10 @@
                         <th scope="col">{% anchor location _("LOCATION") %}</th>
                         <th scope="col">{% anchor medicine _("MEDICINE") %}</th>
                         <th scope="col">{% anchor quantity _("Quantity") %}</th>
-                        <th scope="col">{% anchor clinic_date_added _("REMARKS") %}</th>
+                        <th scope="col">{% anchor clinic_date_added _("DATE") %}</th>
                         <th scope="col">{% anchor critical _("REMARKS") %}</th>
+                        <th scope="col">{% anchor user _("USER") %}</th>
+
                         
                     </tr>
                 </thead>
@@ -57,6 +59,7 @@
                             <td style="width: 15%">{{ item.quantity }}</td>
                             <td style="width: 15%">{{ item.clinic_date_added }}</td>
                             <td style="width: 15%">{{ item.note }}</td>
+                            <td style="width: 15%">{{ item.user }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

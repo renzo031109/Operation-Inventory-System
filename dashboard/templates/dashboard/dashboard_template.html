@@ -15,8 +15,8 @@ HOME
 <div class="container text-center">
     <div class="row">
       <div class="col-3">
-        <div class="card text-bg-primary mb-3 shadow fade show">
-            <h5 class="card-header">TOTAL ITEM COUNT</h5>
+        <div class="card text-bg-danger mb-3 shadow fade show">
+            <h5 class="card-header">FACILITY ITEM COUNT</h5>
             <div class="card-body">
               <h1 class="card-title">{{ item_count }}</h1>
             </div>
@@ -24,15 +24,15 @@ HOME
       </div>
       <div class="col-3">
         <div class="card text-bg-danger shadow fade show">
-            <h5 class="card-header ">TOTAL CRITICAL STOCKS</h5>
+            <h5 class="card-header ">FACILITY CRITICAL STOCKS</h5>
             <div class="card-body">
                 <h1 class="card-title">{{ critical_count }}</h1>
             </div>
           </div>
       </div>
       <div class="col-3">
-        <div class="card text-bg-warning mb-3 shadow fade show ">
-            <h5 class="card-header">TRANSACTION TODAY</h5>
+        <div class="card text-bg-danger mb-3 shadow fade show ">
+            <h5 class="card-header">FACILITY TRANSACTION TODAY</h5>
             <div class="card-body">
                 <h1 class="card-title">{{ transaction_count }}</h1>
             </div>
@@ -40,7 +40,7 @@ HOME
       </div>
 
       <div class="col-3">
-        <div class="card text-bg-info mb-3 shadow fade show ">
+        <div class="card text-bg-warning mb-3 shadow fade show ">
             <h5 class="card-header">CLINIC LOGS TODAY</h5>
             <div class="card-body">
                 <h1 class="card-title">{{ clinic_log_count }}</h1>
@@ -132,7 +132,7 @@ HOME
           </div>
 
           <div class="pb-5">
-            <a href="{% url 'critical_stock_excel_export' %}"><button class="btn btn-success mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+            <a href="{% url 'critical_stock_excel_export' %}"><button class="btn btn-primary mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
           </div>
 
     </div>
@@ -179,6 +179,10 @@ HOME
             </table>
 
       </div>
+
+       <div class="pb-5">
+            <a href="{% url 'critical_medicine_excel_export' %}"><button class="btn btn-primary mt-3 ms-2"><i class="fa-solid fa-file-export"></i> EXPORT XLS</button></a>
+        </div>
 
 
     </div>

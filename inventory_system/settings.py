@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'clinic.middleware.CurrentUserMiddleware', #  is a reference to the CurrentUser Middleware class that you defined in your middleware.py
 ]
 
 ROOT_URLCONF = 'inventory_system.urls'

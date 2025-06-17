@@ -80,6 +80,8 @@ with connection.cursor() as cursor:
             consumed INTEGER DEFAULT 0 NULL,
             demand_id INTEGER NULL,
             location_id INTEGER NULL, 
+            note TEXT NULL,
+            user VARCHAR(200) NULL, 
             FOREIGN KEY (demand_id) REFERENCES clinic_demand(id),
             FOREIGN KEY (location_id) REFERENCES clinic_location(id)
         );
@@ -121,6 +123,7 @@ with connection.cursor() as cursor:
             quantity INTEGER NULL,
             clinic_date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,
             note TEXT NULL,
+            user VARCHAR(200) NULL,     
             location_id INTEGER NULL,
             FOREIGN KEY (location_id) REFERENCES clinic_location(id)
         );
@@ -293,7 +296,7 @@ for column in columns:
 from django.db import connection
 
 with connection.cursor() as cursor:
-    cursor.execute("DROP TABLE IF EXISTS clinic_medicinemovement;")  # Safely drops the table
+    cursor.execute("DROP TABLE IF EXISTS clinic_medicine;")  # Safely drops the table
     connection.commit()
 
 print("Table clinic_medcode dropped successfully!")

@@ -84,3 +84,13 @@ class MedicineFilter(django_filters.FilterSet):
     class Meta:
         model = Medicine
         fields = ['medicine']
+
+
+    
+class MedicineMovementFilter(django_filters.FilterSet):
+    medicine = CharFilter(field_name='medicine', lookup_expr='icontains', label="MEDICINE")
+    
+
+    class Meta:
+        model = Medicine
+        fields = ['medicine']

@@ -57,10 +57,12 @@
       {% endif %}
 
       {% if request.user|has_group:"OPERATION" or request.user|has_group:"ADMIN" %}
-              <li><a class="dropdown-item" href="{% url 'summary_item' %}">INVENTORY REPORT</a></li>
-              <li><a class="dropdown-item" href="{% url 'inventory_item' %}">DETAILED REPORT</a></li>
+              <li><a class="dropdown-item" href="{% url 'summary_item' %}">FACILITY INVENTORY REPORT</a></li>
+              <li><a class="dropdown-item" href="{% url 'inventory_item' %}">FACILITY DETAILED REPORT</a></li>
           
       {% endif %}
+
+      <div class="dropdown-divider"></div>
 
       {% if request.user|has_group:"CLINIC" or request.user|has_group:"ADMIN" %}
 

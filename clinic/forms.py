@@ -90,13 +90,14 @@ class AddMedicineForm(forms.ModelForm):
         
         
         labels = {
-            'location':'',
+            'location':'LOCATION',
             'medcode': '',
             'quantity': ''
         }
 
         widgets={
-            'location': forms.Select(attrs={'class':'NewMedicineForm', 'autocomplete': 'off', 'required': False }),
+            
+            'location': forms.Select(attrs={'class':'NewMedicineForm', 'autocomplete': 'off'}),
             'medcode': forms.Select(attrs={'class':'AddMedicineForm', 'autocomplete': 'off', 'required': True }),
             'quantity': forms.TextInput(attrs={'class':'AddMedicineForm','autocomplete': 'off', 'required': True }),
         }
@@ -104,7 +105,6 @@ class AddMedicineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['medcode'].queryset = MedCode.objects.none()
-        self.fields['location'].empty_label = "SELECT LOCATION:"
 
         print('this location ', self.data)
 
@@ -119,8 +119,8 @@ class AddMedicineForm(forms.ModelForm):
             self.fields['medcode'].queryset = self.instance.location.medcode_set.order_by('code')
 
 
-MedicineRecordFormSet = modelformset_factory(Medicine, form=AddMedicineForm, extra=1)
 
+MedicineRecordFormSet = modelformset_factory(Medicine, form=AddMedicineForm, extra=1)
 
 
 

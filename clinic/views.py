@@ -4,7 +4,7 @@ import json
 from .forms import ClinicRecordFormSet, MedicineRecordFormSet, NewMedicineRecordFormSet
 from .models import Clinic_Record, Medicine, MedCode, Location, MedicineMovement
 from django.contrib import messages
-from .filters import ClinicRecordFilter, MedicineFilter
+from .filters import ClinicRecordFilter, MedicineFilter, MedicineMovementFilter
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
@@ -186,48 +186,47 @@ def add_medicine(request):
                 # check if itemcode is selected
                 if form.cleaned_data.get('medcode') and form.cleaned_data.get('quantity'):  
                     
-
-                    #get the item qty from the form
                     add_location = form.cleaned_data.get('location')
-
-                    #get the 1st input location to copy to next rows
-                    location_list.append(add_location)
-
+                    #get the 1st input to copy to the rest of the row
+                    
                     #get the item name from the form 
                     add_medicine = form.cleaned_data.get('medcode')
 
                     #get the item qty from the form
                     add_qty = form.cleaned_data.get('quantity')
-             
+                
+                    #get the code from MedCode
                     medicine_soh = MedCode.objects.get(code=add_medicine)
 
                     #compute add soh
                     soh = int(medicine_soh.quantity) + int(add_qty)
 
-                    #get the updated soh after add
-                    medicine_soh.quantity = int(soh)
-                    
-                    #save tables
+                    #get the 1st form for location
+                    location_list.append(add_location)
+                    location = location_list[0] if location_list else None
+
+                    medicine_soh.quantity = soh
+
                     medicine_soh.save()
-
-                    location = location_list[0]
-
+                    
                     #medicine movement logs
                     medicine_movement = MedicineMovement(
                             code = medicine_soh.code,
                             medicine = medicine_soh.medicine,
                             quantity = +add_qty,
                             note = "ADD",
+                            user = request.user,
                             location = location)
-                    
                     medicine_movement.save()
+
+                    messages.success(request, f"You added '{medicine_soh.medicine}' successfully!")
 
                 else:
 
                     messages.error(request, "Invalid Input. Form is incomplete.")
                     return redirect('add_medicine')
                 
-            messages.success(request, "You added stock successfully!")
+            
                 
             return redirect('medicine_report_details')
         
@@ -235,10 +234,11 @@ def add_medicine(request):
             messages.error(request, "Invalid Input!")
 
     else:
-        formset = MedicineRecordFormSet(queryset=MedCode.objects.none())
+        formset = MedicineRecordFormSet(queryset=Medicine.objects.none())
 
-    context = {'formset': formset}
+    context = {'formset': formset }
     return render(request, 'clinic/add_medicine.html', context)
+
 
 
 @login_required
@@ -262,7 +262,7 @@ def new_medicine(request):
                 location_value = Location.objects.get(location=new_location)
 
                 #formulate the itemcode
-                concat = str(location_value) + " | " + new_medicine
+                concat = str(new_medicine)+ " - " + str(location_value)  
        
                 # Check if value exist in the database
                 if MedCode.objects.filter(code__iexact=concat).exists():
@@ -277,12 +277,14 @@ def new_medicine(request):
                     quantity=new_medicine_qty, 
                     demand=new_demand, 
                     critical=new_critical,
+                    note="BEGINNING",
+                    user=request.user
                     )
                 medcode.save()
          
                 # Check if fields are valid
                 if new_medicine and new_medicine_qty:
-                    # Create and save the new medicine entry
+                    #Create and save the new medicine entry
                     new_medicine_db = Medicine(
                         medcode=medcode,
                         medicine=str(new_medicine), 
@@ -292,17 +294,17 @@ def new_medicine(request):
                         location=new_location)
                     new_medicine_db.save()
 
-
                     #medicine movement logs
                     medicine_movement = MedicineMovement(
                             code = concat,
                             medicine = str(new_medicine),
                             quantity = +new_medicine_qty,
                             note = "BEGINNING",
+                            user=request.user,
                             location = new_location)
                     medicine_movement.save()
 
-                    messages.success(request, "You added stock successfully!")
+                    messages.success(request, f"You added stock '{new_medicine}' successfully!")
                 else:
                     # Add an error message for incomplete fields
                     messages.error(request, "Both medicine and quantity fields are required.")
@@ -355,27 +357,28 @@ def medicine_movement_report(request):
     
     medicine = MedicineMovement.objects.all()
 
-    # medicine_record_filter = MedicineFilter(request.GET, queryset=medicine)
-    # medicines = medicine_record_filter.qs
-    # item_count = medicines.count()
+    #to retrieve a filtered QuerySet of Medicine objects
+    medicine_movement_filter = MedicineMovementFilter(request.GET, queryset=medicine)
+    medicines = medicine_movement_filter.qs
+    item_count = medicines.count()
 
-    # #Prompt a message on the qty of the listed report
-    # if item_count > 0 :
-    #     messages.info(request, f"Found '{item_count}' item(s) in the database")
-    # else:
-    #     messages.info(request, f"Item not Found in the database ")
+    #Prompt a message on the qty of the listed report
+    if item_count > 0 :
+        messages.info(request, f"Found '{item_count}' item(s) in the database")
+    else:
+        messages.info(request, f"Item not Found in the database ")
 
 
-    # #This will send the variable to filter views
-    # global filter_medicine_record_val
-    # def filter_medicine_record_val():
-    #     return medicines
+    #This will send the variable to filter views
+    global filter_medicine_movement_val
+    def filter_medicine_movement_val():
+        return medicines
 
 
     context = {
-        # 'item_count': item_count,
-        'medicines': medicine,
-        # 'clinic_record_filter': medicine_record_filter
+        'item_count': item_count,
+        'medicines': medicines,
+        'medicine_movement_filter': medicine_movement_filter
         }
     
     return render(request, 'clinic/medicine_movement_report.html', context)
@@ -388,6 +391,7 @@ def medicine_report_details(request):
     
     medicine = MedCode.objects.all()
 
+    #to retrieve a filtered QuerySet of Medicine objects
     medicine_record_filter = MedicineFilter(request.GET, queryset=medicine)
     medicines = medicine_record_filter.qs
     item_count = medicines.count()
@@ -516,7 +520,7 @@ def medicine_export_excel_summary(request):
 
     #Export excel function
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="MEDICINE LOGS.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="MEDICINE INVENTORY.xlsx"'
 
     thin_border = Border(left=Side(style='thin'), 
                      right=Side(style='thin'), 
@@ -527,10 +531,10 @@ def medicine_export_excel_summary(request):
     # Declare Workbook
     workbook = Workbook()
     worksheet = workbook.active
-    worksheet.merge_cells('A1:E1')
+    worksheet.merge_cells('A1:F1')
 
     first_cell = worksheet['A1']
-    first_cell.value = "MEDICINE LOGS"
+    first_cell.value = "MEDICINE INVENTORY"
     first_cell.font = Font(bold=True)
     first_cell.alignment = Alignment(horizontal="center", vertical="center")
 
@@ -539,11 +543,13 @@ def medicine_export_excel_summary(request):
 
     # Add headers
     headers =   [
+                'LOCATION',
                 'MEDICINE',
                 'STOCK ON HAND',
                 'TOTAL CONSUMED',
                 'DEMAND',
                 'CRITICAL QTY'
+
                 ]
     row_num = 2
 
@@ -570,13 +576,16 @@ def medicine_export_excel_summary(request):
         
         #convert object fields to string
 
+        location = str(item.location)
         medicine = str(item.medicine)
         quantity = str(item.quantity)
         consumed = str(item.consumed)
         demand = str(item.demand)
         critical = str(item.critical)
+        user = str(item.user)
 
         worksheet.append([
+            location,
             medicine,
             quantity,
             consumed,
@@ -586,6 +595,90 @@ def medicine_export_excel_summary(request):
     
     workbook.save(response)
     return response
+
+
+
+@login_required
+def medicine_export_excel_movement(request):
+
+    #Export excel function
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="MEDICINE MOVEMENT.xlsx"'
+
+    thin_border = Border(left=Side(style='thin'), 
+                     right=Side(style='thin'), 
+                     top=Side(style='thin'), 
+                     bottom=Side(style='thin'))
+
+
+    # Declare Workbook
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.merge_cells('A1:F1')
+
+    first_cell = worksheet['A1']
+    first_cell.value = "MEDICINE LOGS"
+    first_cell.font = Font(bold=True)
+    first_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+
+    worksheet.title = "MEDICINE LOGS"
+
+    # Add headers
+    headers =   [
+                'LOCATION',
+                'MEDICINE',
+                'QUANTITY',
+                'DATE',
+                'REMARKS',
+                'USER'
+                ]
+    row_num = 2
+
+
+    for col_num, column_title in enumerate(headers, 1):
+        cell = worksheet.cell(row=row_num, column=col_num)
+        cell.value = column_title
+        cell.fill = PatternFill("solid", fgColor="CFE2FF")
+        cell.font = Font(bold=True, color="0B5ED7")
+        cell.border = thin_border
+
+
+    # Add data from the model
+    # items = ItemBase.objects.all()
+    # check if it was filtered if not set default to all
+    if filter_medicine_movement_val():
+        medicines = filter_medicine_movement_val()
+        print("With filter value")
+    else:
+        medicines = MedCode.objects.all()
+        print("filter no value")
+
+    for item in medicines:
+        
+        #convert object fields to string
+
+        location = str(item.location)
+        medicine = str(item.medicine)
+        quantity = str(item.quantity)
+        remarks = str(item.note)
+        user = str(item.user)
+        clinic_date_added = datetime.strftime(item.clinic_date_added,'%m/%d/%Y %H:%M:%S')
+
+        worksheet.append([
+            location,
+            medicine,
+            quantity,
+            clinic_date_added,
+            remarks,
+            user    
+        ])
+    
+    workbook.save(response)
+    return response
+
+
+
 
 
 

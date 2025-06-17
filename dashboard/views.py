@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from inventory.models import Item, ItemBase
-from clinic.models import Clinic_Record, Medicine
+from clinic.models import Clinic_Record, MedCode
 from django.http import HttpResponse
 import datetime
 from django.db.models import Q
@@ -22,7 +22,7 @@ def dashboard_view(request):
     itembase = ItemBase.objects.all()
     item = Item.objects.all()
     clinic = Clinic_Record.objects.all()
-    medicine = Medicine.objects.all()
+    medicine = MedCode.objects.all()
 
     #Total Item Count
     item_count = itembase.count()
@@ -174,5 +174,93 @@ def critical_stock_excel_export(request):
     
     workbook.save(response)
     return response
+
+
+
+def critical_medicine_excel_export(request):
+    #Export excel function
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="CLINIC CRITICAL STOCK.xlsx"'
+
+    thin_border = Border(left=Side(style='thin'), 
+                     right=Side(style='thin'), 
+                     top=Side(style='thin'), 
+                     bottom=Side(style='thin'))
+
+    # Declare Workbook
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.merge_cells('A1:E1')
+
+    first_cell = worksheet['A1']
+    first_cell.value = "CLINIC CRITICAL STOCK"
+    first_cell.font = Font(bold=True)
+    first_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+
+    worksheet.title = "CLINIC CRITICAL STOCK"
+
+    # Add headers
+    headers =   [
+                'LOCATION',
+                'MEDICINE',	
+                'SOH',		
+                'CRITICAL VALUE',
+                'DEMAND'
+                ]
+    row_num = 2
+
+
+    for col_num, column_title in enumerate(headers, 1):
+        cell = worksheet.cell(row=row_num, column=col_num)
+        cell.value = column_title
+        cell.fill = PatternFill("solid", fgColor="CFE2FF")
+        cell.font = Font(bold=True, color="0B5ED7")
+        cell.border = thin_border
+
+
+    # Add data from the model
+    items = MedCode.objects.all()
+
+
+    for item in items:
+        
+        if item.critical != 0:
+        
+            #condition when critical_value has value
+            if item.critical > 0:
+                if item.quantity <= item.critical:
+                    #convert object fields to string
+                    location = str(item.location)
+                    demand = str(item.demand)
+
+                    worksheet.append([
+                    location,
+                    item.medicine,
+                    item.quantity,
+                    item.critical,
+                    demand
+                ])
+
+            #condition when critical_value is null  
+            else:
+                if item.quantity <= none_value :
+
+                    #convert object fields to string
+                    location = str(item.location)
+                    demand = str(item.demand)
+
+                    worksheet.append([
+                    location,
+                    item.medicine,
+                    item.quantity,
+                    item.critical,
+                    demand
+
+                    ])
+    
+    workbook.save(response)
+    return response
+
 
 
