@@ -14,15 +14,15 @@ HOME
 </div>
 <div class="container text-center">
     <div class="row">
-      <div class="col-3">
+      <div class="col-4">
         <div class="card text-bg-danger mb-3 shadow fade show">
-            <h5 class="card-header">FACILITY ITEM COUNT</h5>
+            <h5 class="card-header">TOTAL FACILITY ITEM</h5>
             <div class="card-body">
               <h1 class="card-title">{{ item_count }}</h1>
             </div>
           </div>
       </div>
-      <div class="col-3">
+      <div class="col-4">
         <div class="card text-bg-danger shadow fade show">
             <h5 class="card-header ">FACILITY CRITICAL STOCKS</h5>
             <div class="card-body">
@@ -30,7 +30,7 @@ HOME
             </div>
           </div>
       </div>
-      <div class="col-3">
+      <div class="col-4">
         <div class="card text-bg-danger mb-3 shadow fade show ">
             <h5 class="card-header">FACILITY TRANSACTION TODAY</h5>
             <div class="card-body">
@@ -39,7 +39,32 @@ HOME
           </div>
       </div>
 
-      <div class="col-3">
+    </div>
+
+
+    <div class="row mt-3">
+
+      <div class="col-4">
+        <div class="card text-bg-warning mb-3 shadow fade show ">
+            <h5 class="card-header">TOTAL CLINIC MEDICINE</h5>
+            <div class="card-body">
+                <h1 class="card-title">{{ medicine_count }}</h1>
+            </div>
+          </div>
+      </div>
+
+
+      <div class="col-4">
+        <div class="card text-bg-warning mb-3 shadow fade show ">
+            <h5 class="card-header">CLINIC CRITICAL STOCKS</h5>
+            <div class="card-body">
+                <h1 class="card-title">{{ critical_medicine_count }}</h1>
+            </div>
+          </div>
+      </div>
+
+
+      <div class="col-4">
         <div class="card text-bg-warning mb-3 shadow fade show ">
             <h5 class="card-header">CLINIC LOGS TODAY</h5>
             <div class="card-body">

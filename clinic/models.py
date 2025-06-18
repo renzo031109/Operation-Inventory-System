@@ -228,7 +228,7 @@ class Clinic_Record(models.Model):
 
 
 
-
+#signal when row is deleted
 #This will log the row deleted in Admin panel
 @receiver(pre_delete, sender=MedCode)
 def log_medicine_deletion(sender, instance, **kwargs):

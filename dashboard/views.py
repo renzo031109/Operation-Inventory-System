@@ -26,10 +26,11 @@ def dashboard_view(request):
 
     #Total Item Count
     item_count = itembase.count()
+    medicine_count = medicine.count()
 
     #Total Items with critical stocks
     critical_count = 0
-    critical_list = []
+    # critical_list = []
     for critical in itembase:
         
         #exclude critical value zero
@@ -40,24 +41,28 @@ def dashboard_view(request):
             
                 if critical.soh <= critical.critical_value:      
                     critical_count += 1      
-                    critical_list.append(critical.id)
-                    print(f"critical database = {critical.soh}")
-                    print(f"critical assign = {critical.critical_value}")
+                    # critical_list.append(critical.id)
 
             #condition when critical value is empty
             else:   
                 if critical.soh <= none_value:
                     critical_count += 1
-                    critical_list.append(critical.id)
+                    # critical_list.append(critical.id)
  
-    
-    print(critical_count)
+
                 
     #Transaction today
     transaction_count = 0
     for transaction_date in item:
         if transaction_date.date_added.date() == datetime.datetime.now().date():
             transaction_count += 1
+
+
+    #Count critical for medicine
+    critical_medicine_count = 0
+    for medcritical in medicine:
+        if medcritical.quantity <= medcritical.critical:
+            critical_medicine_count += 1
 
 
     # Clinic log today
@@ -67,7 +72,7 @@ def dashboard_view(request):
             unique_users.add(clinic_date.employee_id)
     clinic_log_count = len(unique_users)  # Count the unique users
 
-    
+
     context = {
         'item_count': item_count,
         'critical_count': critical_count,
@@ -75,7 +80,9 @@ def dashboard_view(request):
         'itembase': itembase,
         'transaction_count': transaction_count,
         'clinic_log_count': clinic_log_count,
-        'medicine': medicine
+        'medicine': medicine,
+        'critical_medicine_count': critical_medicine_count,
+        'medicine_count': medicine_count
 
     }
 
