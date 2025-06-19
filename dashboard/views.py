@@ -25,8 +25,8 @@ def dashboard_view(request):
     medicine = MedCode.objects.all()
 
     #Total Item Count
-    item_count = itembase.count()
-    medicine_count = medicine.count()
+    item_count = ItemBase.objects.filter(site=1).count()
+    medicine_count = MedCode.objects.filter(location=1).count()
 
     #Total Items with critical stocks
     critical_count = 0

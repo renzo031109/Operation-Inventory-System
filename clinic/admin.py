@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Location, Gender, Company, Illness, AMR, Medicine, Clinic_Record, Demand, MedicalServiceGiven, MedCode, MedicineMovement
-admin.site.site_header = "S360 CLINIC"
 
 # Registering other models as is
 admin.site.register(Location)
