@@ -9,7 +9,7 @@ admin.site.register(Illness)
 admin.site.register(AMR)
 admin.site.register(Demand)
 admin.site.register(MedicalServiceGiven)
-# admin.site.register(Medicine)
+admin.site.register(Medicine)
 admin.site.register(MedCode)
 admin.site.register(MedicineMovement)
 

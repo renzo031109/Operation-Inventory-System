@@ -29,12 +29,10 @@ $(document).ready(function () {
 
 
   $('#submitbtnadd').click(function(){
-   $('#spinner').show();
+      $('#spinner').show();
    }) 
 
   
-
-
 
 });
 

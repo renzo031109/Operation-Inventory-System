@@ -82,8 +82,8 @@ with connection.cursor() as cursor:
             location_id INTEGER NULL, 
             note TEXT NULL,
             user VARCHAR(200) NULL, 
-            FOREIGN KEY (demand_id) REFERENCES clinic_demand(id),
-            FOREIGN KEY (location_id) REFERENCES clinic_location(id)
+            FOREIGN KEY (demand_id) REFERENCES clinic_demand(id) ON DELETE SET NULL,
+            FOREIGN KEY (location_id) REFERENCES clinic_location(id) ON DELETE SET NULL
         );
     """)
 
@@ -125,7 +125,7 @@ with connection.cursor() as cursor:
             note TEXT NULL,
             user VARCHAR(200) NULL,     
             location_id INTEGER NULL,
-            FOREIGN KEY (location_id) REFERENCES clinic_location(id)
+            FOREIGN KEY (location_id) REFERENCES clinic_location(id) ON DELETE SET NULL
         );
     """)
 
@@ -164,13 +164,13 @@ with connection.cursor() as cursor:
             quantity INTEGER NULL,
             medical_given_id INTEGER NULL,
             note TEXT NULL,
-            FOREIGN KEY (location_id) REFERENCES clinic_location(id),
-            FOREIGN KEY (gender_id) REFERENCES clinic_gender(id),
-            FOREIGN KEY (company_id) REFERENCES clinic_company(id),
-            FOREIGN KEY (medcode_id) REFERENCES clinic_medicine(id),
-            FOREIGN KEY (illness_id) REFERENCES clinic_illness(id),
-            FOREIGN KEY (amr_id) REFERENCES clinic_amr(id),
-            FOREIGN KEY (medical_given_id) REFERENCES clinic_medicalservicegiven(id)
+            FOREIGN KEY (location_id) REFERENCES clinic_location(id) ON DELETE SET NULL,
+            FOREIGN KEY (gender_id) REFERENCES clinic_gender(id) ON DELETE SET NULL,
+            FOREIGN KEY (company_id) REFERENCES clinic_company(id) ON DELETE SET NULL,
+            FOREIGN KEY (medcode_id) REFERENCES clinic_medicine(id) ON DELETE SET NULL,
+            FOREIGN KEY (illness_id) REFERENCES clinic_illness(id) ON DELETE SET NULL,
+            FOREIGN KEY (amr_id) REFERENCES clinic_amr(id) ON DELETE SET NULL,
+            FOREIGN KEY (medical_given_id) REFERENCES clinic_medicalservicegiven(id) ON DELETE SET NULL
         );
     """)
 
@@ -221,13 +221,13 @@ with connection.cursor() as cursor:
             quantity INTEGER NULL,
             medical_given_id INTEGER NULL,
             note TEXT NULL,
-            FOREIGN KEY (location_id) REFERENCES clinic_location(id),
-            FOREIGN KEY (gender_id) REFERENCES clinic_gender(id),
-            FOREIGN KEY (company_id) REFERENCES clinic_company(id),
-            FOREIGN KEY (medcode_id) REFERENCES clinic_medicine(id),
-            FOREIGN KEY (illness_id) REFERENCES clinic_illness(id),
-            FOREIGN KEY (amr_id) REFERENCES clinic_amr(id),
-            FOREIGN KEY (medical_given_id) REFERENCES clinic_medicalservicegiven(id)
+            FOREIGN KEY (location_id) REFERENCES clinic_location(id) ON DELETE SET NULL,
+            FOREIGN KEY (gender_id) REFERENCES clinic_gender(id) ON DELETE SET NULL,
+            FOREIGN KEY (company_id) REFERENCES clinic_company(id) ON DELETE SET NULL,
+            FOREIGN KEY (medcode_id) REFERENCES clinic_medicine(id) ON DELETE SET NULL,
+            FOREIGN KEY (illness_id) REFERENCES clinic_illness(id) ON DELETE SET NULL,
+            FOREIGN KEY (amr_id) REFERENCES clinic_amr(id) ON DELETE SET NULL,
+            FOREIGN KEY (medical_given_id) REFERENCES clinic_medicalservicegiven(id) ON DELETE SET NULL
         );
     """)
     cursor.execute("""
@@ -296,10 +296,9 @@ for column in columns:
 from django.db import connection
 
 with connection.cursor() as cursor:
-    cursor.execute("DROP TABLE IF EXISTS clinic_medicine;")  # Safely drops the table
+    cursor.execute("DROP TABLE IF EXISTS clinic_medicinemovement;")  # Safely drops the table
     connection.commit()
 
-print("Table clinic_medcode dropped successfully!")
 
 
 

@@ -283,7 +283,7 @@ def new_medicine(request):
                 medcode.save()
          
                 # Check if fields are valid
-                if new_medicine and new_medicine_qty:
+                if new_medicine and new_medicine_qty >= 0:
                     #Create and save the new medicine entry
                     new_medicine_db = Medicine(
                         medcode=medcode,

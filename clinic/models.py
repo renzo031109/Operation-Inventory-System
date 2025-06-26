@@ -109,8 +109,8 @@ class MedCode(models.Model):
     consumed = models.IntegerField(default=0, null=True)
     note = models.TextField(null=True, blank=True)
     user = models.CharField(max_length=200, null=True)
-    demand = models.ForeignKey(Demand, on_delete=models.CASCADE, null=True, blank=True)   
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True) 
+    demand = models.ForeignKey(Demand, on_delete=models.SET_NULL, null=True, blank=True)   
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True) 
 
 
     def __str__(self):
@@ -144,6 +144,7 @@ class Medicine(models.Model):
     
     class Meta:
         ordering = ["medicine"]
+        verbose_name = "zDUPLICATE"
 
     #Save data to upper case
     def save(self, *args, **kwargs):
@@ -159,7 +160,7 @@ class MedicineMovement(models.Model):
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     note = models.TextField(null=True, blank=True)
     user = models.CharField(max_length=200, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True) 
+    location = models.ForeignKey(Location, models.SET_NULL, null=True) 
 
 
     def __str__(self):
@@ -194,7 +195,7 @@ class MedicalServiceGiven(models.Model):
 
 
 class Clinic_Record(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
     employee_id = models.CharField(max_length=50, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     first_name = models.CharField(max_length=200, null=True, blank=True)
@@ -202,8 +203,8 @@ class Clinic_Record(models.Model):
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
-    illness = models.ForeignKey(Illness, on_delete=models.CASCADE, null=True, blank=True)
-    amr = models.ForeignKey(AMR, on_delete=models.CASCADE, null=True, blank=True)
+    illness = models.ForeignKey(Illness, on_delete=models.SET_NULL, null=True, blank=True)
+    amr = models.ForeignKey(AMR, on_delete=models.SET_NULL, null=True, blank=True)
     medcode = models.ForeignKey(MedCode, on_delete=models.SET_NULL, null=True)
     medicine = models.CharField(max_length=200, null=True, blank=True)
     quantity = models.IntegerField(null=True)
