@@ -130,7 +130,7 @@ class MedCode(models.Model):
 # This is the base Medicine Table
 class Medicine(models.Model): 
     medicine = models.CharField(max_length=200)
-    quantity = models.IntegerField(null=True)
+    quantity = models.IntegerField(null=True, blank=True)
     clinic_date_added = models.DateTimeField(auto_now_add=True, null=True)
     critical = models.IntegerField(null=True)
     consumed = models.IntegerField(default=0, null=True)

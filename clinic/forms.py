@@ -61,6 +61,7 @@ class ClinicRecordFormSteps(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['medcode'].queryset = MedCode.objects.none()
+        self.fields['quantity'].initial = 0
 
         print('this location ', self.data)
 
@@ -68,11 +69,11 @@ class ClinicRecordFormSteps(forms.ModelForm):
         if 'form-0-location' in self.data:
             try:
                 location_id = int(self.data.get('form-0-location'))
-                self.fields['medcode'].queryset = MedCode.objects.filter(location_id=location_id).order_by('code')
+                self.fields['medcode'].queryset = ( MedCode.objects.filter(location_id=location_id).order_by('code') )
             except (ValueError, TypeError):
                 pass #invalid input from the client
         elif self.instance.pk:
-            self.fields['medcode'].queryset = self.instance.location.medcode_set.order_by('code')
+            self.fields['medcode'].queryset = ( self.instance.location.medcode_set.filter(quantity__gt=0).order_by('code') )
 
 
 ClinicRecordFormSet = modelformset_factory(Clinic_Record, form=ClinicRecordFormSteps, extra=1)

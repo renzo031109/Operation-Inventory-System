@@ -26,8 +26,8 @@ def success(request):
 
 @login_required
 def clinic_record_steps(request):
-    insufficient_quantity = False  # Flag to track if any form fails quantity validation
-    validation_errors = []  # Store error messages
+    insufficient_quantity = False
+    validation_errors = []
 
     location_list = []
     employee_id_list = []
@@ -44,22 +44,54 @@ def clinic_record_steps(request):
     if request.method == 'POST':
         formset = ClinicRecordFormSet(request.POST)
 
-        # Validate all forms first
         if formset.is_valid():
-            records_to_process = []  # Temporary list to store valid forms and medicines
+            records_to_process = []
             for form in formset:
-                if form.cleaned_data.get('medcode') and form.cleaned_data.get('quantity'):
-                    get_medcode = form.cleaned_data.get('medcode')
-                    get_quantity = form.cleaned_data.get('quantity')
+                med = form.cleaned_data.get('medcode')
+                qty = form.cleaned_data.get('quantity')
 
-                    try:
-                        #code table
-                        medicine_db = MedCode.objects.get(code=get_medcode)
-                
-                        # Check if quantity is sufficient
-                        if medicine_db.quantity >= get_quantity:
+                if not med:  
+                    continue  # skip empty form rows
 
-                            #get the input of user
+                try:
+                    medicine_db = MedCode.objects.get(code=med)
+
+                    # Case: "None" selected → skip quantity validation
+                    if medicine_db.code == "*NONE - BC6" or medicine_db.code == "*NONE - SHOREHOUSE" :
+                        # collect patient info (but no deduction)
+                        get_location = form.cleaned_data.get('location')
+                        get_employee_id = form.cleaned_data.get('employee_id')
+                        get_last_name = form.cleaned_data.get('last_name')
+                        get_first_name = form.cleaned_data.get('first_name')
+                        get_gender = form.cleaned_data.get('gender')
+                        get_company = form.cleaned_data.get('company')
+                        get_department = form.cleaned_data.get('department')
+                        get_illness = form.cleaned_data.get('illness')
+                        get_amr = form.cleaned_data.get('amr')
+                        get_medical_given = form.cleaned_data.get('medical_given')
+                        get_note = form.cleaned_data.get('note')
+
+                        records_to_process.append((form, medicine_db, 0))  # qty = 0
+                        location_list.append(get_location)
+                        employee_id_list.append(get_employee_id)
+                        last_name_list.append(get_last_name)
+                        first_name_list.append(get_first_name)
+                        gender_list.append(get_gender)
+                        company_list.append(get_company)
+                        department_list.append(get_department)
+                        illness_list.append(get_illness)
+                        amr_list.append(get_amr)
+                        medical_given_list.append(get_medical_given)
+                        note_list.append(get_note)
+
+                    else:
+                        # Medicine selected → quantity required
+                        if qty is None or qty <= 0:
+                            validation_errors.append(f"Quantity is required for {medicine_db.medicine}.")
+                            continue
+
+                        if medicine_db.quantity >= qty:
+                            # collect patient info
                             get_location = form.cleaned_data.get('location')
                             get_employee_id = form.cleaned_data.get('employee_id')
                             get_last_name = form.cleaned_data.get('last_name')
@@ -70,12 +102,9 @@ def clinic_record_steps(request):
                             get_illness = form.cleaned_data.get('illness')
                             get_amr = form.cleaned_data.get('amr')
                             get_medical_given = form.cleaned_data.get('medical_given')
-                            get_note = form.cleaned_data.get('note') 
-                            # get_medicine = form.cleaned_data.get('medcode')
-                            # get_quantity = form.cleaned_data.get('quantity')
-                    
-                            # Collect the valid form and associated medicine but do not deduct yet
-                            records_to_process.append((form, medicine_db))
+                            get_note = form.cleaned_data.get('note')
+
+                            records_to_process.append((form, medicine_db, qty))
                             location_list.append(get_location)
                             employee_id_list.append(get_employee_id)
                             last_name_list.append(get_last_name)
@@ -87,36 +116,30 @@ def clinic_record_steps(request):
                             amr_list.append(get_amr)
                             medical_given_list.append(get_medical_given)
                             note_list.append(get_note)
-                            
                         else:
                             insufficient_quantity = True
                             validation_errors.append(
                                 f"Insufficient quantity for {medicine_db.medicine}. Available: {medicine_db.quantity}."
                             )
-                    except Medicine.DoesNotExist:
-                        validation_errors.append(f"Medicine {medicine_db.medicine} does not exist.")
-                else:
-                    validation_errors.append("Medicine and quantity are required for all forms.")
+                except MedCode.DoesNotExist:
+                    validation_errors.append("Selected medicine does not exist.")
 
-            # If any form fails validation, stop processing and show errors
+            # show errors if any
             if insufficient_quantity or validation_errors:
                 for error in validation_errors:
                     messages.error(request, error)
                 return render(request, 'clinic/clinic_record_steps.html', {'formset': formset})
 
-            # If all validations pass, process records and deduct quantities
-            for form, medicine_db in records_to_process:
-                # Deduct the quantity
-                get_quantity = form.cleaned_data.get('quantity')
-                medicine_db.quantity -= get_quantity
+            # process records
+            for form, medicine_db, qty in records_to_process:
+                if medicine_db.code != "NONE":
+                    medicine_db.quantity -= qty
+                    medicine_db.consumed += qty
+                    medicine_db.save()
 
-                    
-                medicine_db.consumed += get_quantity
-                medicine_db.save()
-
-                #assign the first form value
+                # shared patient info
                 location = location_list[0]
-                employee_id =  employee_id_list[0]
+                employee_id = employee_id_list[0]
                 last_name = last_name_list[0]
                 first_name = first_name_list[0]
                 gender = gender_list[0]
@@ -127,42 +150,35 @@ def clinic_record_steps(request):
                 medical_given = medical_given_list[0]
                 note = note_list[0]
 
-                # Save the form
                 clinic_form = form.save(commit=False)
                 clinic_form.medcode = medicine_db
                 clinic_form.medicine = medicine_db.medicine
-                clinic_form.quantity = -get_quantity  # Save negative quantity for record
+                clinic_form.quantity = -qty if qty > 0 else 0
 
-                #assign the value to the fields db
                 clinic_form.location = location
-                clinic_form.employee_id =  employee_id
+                clinic_form.employee_id = employee_id
                 clinic_form.last_name = last_name
                 clinic_form.first_name = first_name
                 clinic_form.gender = gender
                 clinic_form.company = company
                 clinic_form.department = department
                 clinic_form.illness = illness
-                clinic_form.amr = amr 
+                clinic_form.amr = amr
                 clinic_form.medical_given = medical_given
                 clinic_form.note = note
-
                 clinic_form.save()
 
+                if medicine_db.code != "NONE":
+                    medicine_movement = MedicineMovement(
+                        code=medicine_db.code,
+                        medicine=medicine_db.medicine,
+                        quantity=-qty,
+                        note="RELEASED",
+                        location=location,
+                    )
+                    medicine_movement.save()
 
-                #medicine movement logs
-                medicine_movement = MedicineMovement(
-                            code = medicine_db.code,
-                            medicine = medicine_db.medicine,
-                            quantity = -get_quantity,
-                            note = "RELEASED",
-                            location=location,
-                            )
-                medicine_movement.save()
- 
-                
-            # Redirect to success page
             return redirect('success')
-
         else:
             messages.error(request, "Invalid input in one or more forms.")
     else:
@@ -682,10 +698,18 @@ def medicine_export_excel_movement(request):
 
 
 
-#This is connected to medcode ajax value / promise
+# #This is connected to medcode ajax value / promise
+# def load_medcode_code(request, location_id):
+#     medcode = list(MedCode.objects.filter(location_id=location_id).values('id', 'code'))
+#     return JsonResponse({'medcode': medcode})+
+
 def load_medcode_code(request, location_id):
-    medcode = list(MedCode.objects.filter(location_id=location_id).values('id', 'code'))
-    return JsonResponse({'medcode': medcode})
+    medcodes = MedCode.objects.filter(location_id=location_id, quantity__gt=0).order_by('code')
+    data = {
+        "medcode": [{"id": med.id, "code": med.code} for med in medcodes]
+    }
+    return JsonResponse(data)
+
 
 
 
