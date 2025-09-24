@@ -16,6 +16,7 @@ urlpatterns = [
 
     #load javascript
     path('load_medicines/<int:location_id>/', views.load_medcode_code, name='load_medcode_code'),
+    path('load_medicines_add/<int:location_id>/', views.load_medcode_code_add, name='load_medcode_code_add'),
 
 
 ]

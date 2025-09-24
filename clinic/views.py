@@ -695,20 +695,19 @@ def medicine_export_excel_movement(request):
 
 
 
-
-
-
-# #This is connected to medcode ajax value / promise
-# def load_medcode_code(request, location_id):
-#     medcode = list(MedCode.objects.filter(location_id=location_id).values('id', 'code'))
-#     return JsonResponse({'medcode': medcode})+
-
+#This is connected to medcode ajax value / promise
 def load_medcode_code(request, location_id):
     medcodes = MedCode.objects.filter(location_id=location_id, quantity__gt=0).order_by('code')
     data = {
         "medcode": [{"id": med.id, "code": med.code} for med in medcodes]
     }
     return JsonResponse(data)
+
+
+# #This is connected to medcode ajax value / promise -add
+def load_medcode_code_add(request, location_id):
+    medcode = list(MedCode.objects.filter(location_id=location_id).values('id', 'code'))
+    return JsonResponse({'medcode': medcode})
 
 
 
