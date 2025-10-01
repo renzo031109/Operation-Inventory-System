@@ -145,12 +145,12 @@ def critical_stock_excel_export(request):
         if item.critical_value != 0:
         
             #condition when critical_value has value
-            if item.critical_value > 0:
+            if item.critical_value is not None and item.critical_value > 0:
                 if item.soh <= item.critical_value:
                     #convert object fields to string
-                    uom = str(item.uom)
-                    demand_item = str(item.demand_item)
-                    site = str(item.site)
+                    uom = str(item.uom) if item.uom else ""
+                    demand_item = str(item.demand_item) if item.demand_item else ""
+                    site = str(item.site) if item.site else ""
 
                     worksheet.append([
                     site,
@@ -168,7 +168,10 @@ def critical_stock_excel_export(request):
                 if item.soh <= none_value :
 
                     #convert object fields to string
-                    uom = str(item.uom)
+                    uom = str(item.uom) if item.uom else ""
+                    demand_item = str(item.demand_item) if item.demand_item else ""
+                    site = str(item.site) if item.site else ""
+
                     worksheet.append([
                     item.item_name,
                     item.brand_name,
